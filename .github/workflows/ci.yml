@@ -72,6 +72,17 @@ jobs:
       - name: Test grants and Row Level Security
         run: npm run test:integration
 
+      - name: Configure public Supabase environment
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(npx supabase status -o json | jq -r '.PUBLISHABLE_KEY')" >> "$GITHUB_ENV"
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Test authentication flow
+        run: npm run test:e2e
+
       - name: Stop local Supabase
         if: always()
         run: npm run db:stop

@@ -75,16 +75,16 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ## Phase 1 — Invitation vertical slice
 
-**Status:** Not started  
+**Status:** In progress
 **Requirements:** AUTH-01–03, INV-01–08 secara minimum, TPL-02–04 untuk satu template, RSVP-01–03 minimum, PUB-01–03 minimum.  
 **Outcome:** Satu pengguna dapat menyelesaikan alur login sampai menerima RSVP pada undangan terbit.
 
 ### P1.1 Authentication and ownership
 
-- [ ] Implementasi daftar, masuk, keluar, dan reset password.
-- [ ] Buat profile/onboarding minimal.
-- [ ] Terapkan authorization server-side dan RLS.
-- [ ] Uji anonymous, owner, dan cross-owner access.
+- [x] Implementasi daftar, masuk, keluar, dan reset password.
+- [x] Buat profile/onboarding minimal.
+- [x] Terapkan authorization server-side dan RLS.
+- [x] Uji anonymous, owner, dan cross-owner access.
 
 ### P1.2 Invitation draft
 

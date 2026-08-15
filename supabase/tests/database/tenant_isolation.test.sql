@@ -1,9 +1,21 @@
 begin;
 
-select plan(19);
+select plan(23);
 
 select has_table('public', 'profiles', 'profiles table exists');
 select has_table('public', 'invitations', 'invitations table exists');
+select has_function(
+  'public',
+  'handle_new_user',
+  array[]::text[],
+  'profile provisioning function exists'
+);
+select has_trigger(
+  'auth',
+  'users',
+  'on_auth_user_created',
+  'auth signup provisions a profile'
+);
 
 select is(
   (select relrowsecurity from pg_class where oid = 'public.profiles'::regclass),
@@ -64,7 +76,7 @@ values
     '',
     now(),
     '{"provider":"email","providers":["email"]}',
-    '{}',
+    '{"display_name":"Owner A"}',
     now(),
     now()
   ),
@@ -77,15 +89,25 @@ values
     '',
     now(),
     '{"provider":"email","providers":["email"]}',
-    '{}',
+    '{"display_name":"Owner B"}',
     now(),
     now()
   );
 
-insert into public.profiles (id, display_name)
-values
-  ('11111111-1111-4111-8111-111111111111', 'Owner A'),
-  ('22222222-2222-4222-8222-222222222222', 'Owner B');
+select is(
+  (select count(*) from public.profiles),
+  2::bigint,
+  'auth users automatically receive profiles'
+);
+select is(
+  (
+    select display_name
+    from public.profiles
+    where id = '11111111-1111-4111-8111-111111111111'
+  ),
+  'Owner A',
+  'profile uses the validated signup display name'
+);
 
 insert into public.invitations (owner_id)
 values ('11111111-1111-4111-8111-111111111111');

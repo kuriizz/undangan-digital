@@ -5,7 +5,7 @@ test("shows the Phase 0 foundation page", async ({ page }) => {
 
   await expect(
     page.getByRole("heading", {
-      name: "Fondasi teknis siap dikembangkan.",
+      name: "Mulai undangan digital Anda.",
     }),
   ).toBeVisible();
 });
