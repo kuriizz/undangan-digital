@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { pathWithMessage } from "@/features/auth/navigation";
 import { requireUser } from "@/features/auth/session";
 
 import {
@@ -11,6 +12,7 @@ import {
   toDraftContent,
   toEventTimestamp,
 } from "./schemas";
+import { getOwnedInvitationPreview } from "./queries";
 
 export type InvitationDraftFormState = {
   status: "idle" | "error" | "success";
@@ -152,4 +154,86 @@ export async function saveInvitationDraft(
     message: "Perubahan draft berhasil disimpan.",
     values: { ...parsed.values, slug: input.slug },
   };
+}
+
+function invitationId(formData: FormData) {
+  const value = formData.get("invitationId");
+  return typeof value === "string" ? value : "";
+}
+
+export async function publishInvitation(formData: FormData) {
+  const id = invitationId(formData);
+  const invitation = await getOwnedInvitationPreview(id);
+
+  if (!invitation) {
+    redirect(
+      pathWithMessage(
+        "/dashboard",
+        "error",
+        "Draft belum lengkap dan tidak dapat diterbitkan.",
+      ),
+    );
+  }
+
+  const { supabase } = await requireUser();
+  const { error } = await supabase.rpc("publish_invitation", {
+    p_invitation_id: invitation.id,
+    p_expected_revision: invitation.draftRevision,
+  });
+
+  if (error) {
+    redirect(
+      pathWithMessage(
+        `/dashboard/invitations/${invitation.id}/preview`,
+        "error",
+        error.code === "40001"
+          ? "Draft berubah saat diterbitkan. Muat ulang preview dan coba lagi."
+          : "Undangan belum dapat diterbitkan. Silakan coba lagi.",
+      ),
+    );
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/invitations/${invitation.id}/preview`);
+  revalidatePath(`/i/${invitation.slug}`);
+  redirect(
+    pathWithMessage("/dashboard", "success", "Undangan berhasil diterbitkan."),
+  );
+}
+
+export async function unpublishInvitation(formData: FormData) {
+  const id = invitationId(formData);
+  const invitation = await getOwnedInvitationPreview(id);
+
+  if (!invitation) {
+    redirect(
+      pathWithMessage("/dashboard", "error", "Undangan tidak ditemukan."),
+    );
+  }
+
+  const { supabase } = await requireUser();
+  const { error } = await supabase.rpc("unpublish_invitation", {
+    p_invitation_id: invitation.id,
+  });
+
+  if (error) {
+    redirect(
+      pathWithMessage(
+        `/dashboard/invitations/${invitation.id}/preview`,
+        "error",
+        "Undangan belum dapat dinonaktifkan. Silakan coba lagi.",
+      ),
+    );
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/invitations/${invitation.id}/preview`);
+  revalidatePath(`/i/${invitation.slug}`);
+  redirect(
+    pathWithMessage(
+      "/dashboard",
+      "success",
+      "Undangan berhasil dinonaktifkan.",
+    ),
+  );
 }

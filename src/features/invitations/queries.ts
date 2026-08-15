@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { requireUser } from "@/features/auth/session";
+import { createClient } from "@/lib/supabase/server";
 
 import { invitationDocumentV1Schema } from "./content";
 
@@ -9,7 +10,9 @@ export const getOwnedInvitationPreview = cache(async (invitationId: string) => {
   const [{ data: invitation }, { data: event }] = await Promise.all([
     supabase
       .from("invitations")
-      .select("id, slug, draft_content, draft_revision")
+      .select(
+        "id, slug, status, draft_content, draft_revision, published_revision, published_at",
+      )
       .eq("id", invitationId)
       .maybeSingle(),
     supabase
@@ -39,7 +42,31 @@ export const getOwnedInvitationPreview = cache(async (invitationId: string) => {
   return {
     id: invitation.id,
     slug: invitation.slug,
+    status: invitation.status,
     draftRevision: invitation.draft_revision,
+    publishedRevision: invitation.published_revision,
+    publishedAt: invitation.published_at,
+    document: document.data,
+  };
+});
+
+export const getPublishedInvitationBySlug = cache(async (slug: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_published_invitation", {
+    p_slug: slug,
+  });
+  const invitation = Array.isArray(data) ? data[0] : null;
+
+  if (error || !invitation) return null;
+
+  const document = invitationDocumentV1Schema.safeParse(
+    invitation.published_content,
+  );
+  if (!document.success) return null;
+
+  return {
+    slug: invitation.slug as string,
+    publishedAt: invitation.published_at as string,
     document: document.data,
   };
 });

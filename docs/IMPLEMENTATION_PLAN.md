@@ -102,10 +102,10 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P1.4 Publish lifecycle
 
-- [ ] Validasi kelengkapan sebelum publish.
-- [ ] Buat snapshot terbit secara atomik.
-- [ ] Implementasikan halaman `/i/[slug]` yang hanya membaca versi terbit.
-- [ ] Implementasikan unpublish dan cache invalidation.
+- [x] Validasi kelengkapan sebelum publish.
+- [x] Buat snapshot terbit secara atomik.
+- [x] Implementasikan halaman `/i/[slug]` yang hanya membaca versi terbit.
+- [x] Implementasikan unpublish dan cache invalidation.
 
 ### P1.5 RSVP end to end
 

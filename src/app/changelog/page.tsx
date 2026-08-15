@@ -72,6 +72,16 @@ const completedMilestones = [
       "Menambahkan preview khusus pemilik dan metadata dasar undangan.",
     ],
   },
+  {
+    key: "P1.4",
+    title: "Publish lifecycle",
+    changes: [
+      "Menambahkan validasi kelengkapan dan publish snapshot secara atomik.",
+      "Menambahkan halaman publik /i/[slug] yang hanya membaca snapshot terbit.",
+      "Menambahkan unpublish tanpa menghapus draft maupun snapshot terakhir.",
+      "Membatasi lookup publik agar anonymous tidak memperoleh data draft atau kepemilikan.",
+    ],
+  },
 ] as const;
 
 const upcomingPhases = [
@@ -79,7 +89,7 @@ const upcomingPhases = [
     phase: "Phase 1",
     status: "Sedang berjalan",
     summary:
-      "Berikutnya: publish lifecycle, halaman undangan publik, lalu RSVP end-to-end.",
+      "Berikutnya: RSVP publik end-to-end dan ringkasan respons khusus pemilik.",
   },
   {
     phase: "Phase 2",
@@ -144,7 +154,7 @@ export default function ChangelogPage() {
               </h2>
             </div>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">
-              7 milestone tervalidasi
+              8 milestone tervalidasi
             </span>
           </div>
 

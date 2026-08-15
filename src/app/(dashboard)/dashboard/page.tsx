@@ -60,12 +60,22 @@ export default async function DashboardPage({
                   {invitation.draft_revision}
                 </p>
               </div>
-              <Link
-                href={`/dashboard/invitations/${invitation.id}/content`}
-                className="inline-flex min-h-11 items-center rounded-xl bg-rose-700 px-5 font-semibold text-white hover:bg-rose-800"
-              >
-                Edit draft
-              </Link>
+              <div className="flex flex-wrap gap-2">
+                {invitation.status === "published" ? (
+                  <Link
+                    href={`/i/${invitation.slug}`}
+                    className="inline-flex min-h-11 items-center rounded-xl border border-rose-200 bg-white px-5 font-semibold text-rose-900 hover:bg-rose-50"
+                  >
+                    Buka undangan
+                  </Link>
+                ) : null}
+                <Link
+                  href={`/dashboard/invitations/${invitation.id}/content`}
+                  className="inline-flex min-h-11 items-center rounded-xl bg-rose-700 px-5 font-semibold text-white hover:bg-rose-800"
+                >
+                  Edit draft
+                </Link>
+              </div>
             </div>
           </div>
         ) : (

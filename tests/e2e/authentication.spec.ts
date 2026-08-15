@@ -115,12 +115,34 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
     ),
   ).toBe(true);
 
-  await page.getByRole("link", { name: "Kembali mengedit" }).click();
-  await page.getByRole("link", { name: "Kembali ke dashboard" }).click();
+  await page.getByRole("button", { name: "Terbitkan" }).click();
+  await expect(page.getByText("Undangan berhasil diterbitkan.")).toBeVisible();
   await expect(page.getByText(`/i/${slug}`)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Edit draft" })).toBeVisible();
+  const publicPath = await page
+    .getByRole("link", { name: "Buka undangan" })
+    .getAttribute("href");
+  expect(publicPath).toBe(`/i/${slug}`);
 
   await page.getByRole("button", { name: "Keluar" }).click();
   await page.goto(previewUrl);
   await expect(page).toHaveURL(/\/login\?error=/);
+
+  await page.goto(publicPath!);
+  await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
+  await expect(page.getByText("Gedung Bahagia Baru")).toBeVisible();
+  await expect(page).toHaveTitle("Dewi & Rizky | Undangan Pernikahan");
+
+  await page.goto("/login");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Kata sandi").fill("rahasia-aman-123");
+  await page.getByRole("button", { name: "Masuk" }).click();
+  await page.getByRole("link", { name: "Edit draft" }).click();
+  await page.getByRole("link", { name: "Lihat preview" }).click();
+  await page.getByRole("button", { name: "Nonaktifkan" }).click();
+  await expect(
+    page.getByText("Undangan berhasil dinonaktifkan."),
+  ).toBeVisible();
+
+  const unpublishedResponse = await page.goto(publicPath!);
+  expect(unpublishedResponse?.status()).toBe(404);
 });

@@ -6,9 +6,9 @@ digital serta mengelola RSVP tamu.
 ## Status
 
 Project berada pada **Phase 1 — invitation vertical slice**. P0.1 sampai P0.4,
-P1.1 authentication and ownership, P1.2 invitation draft, serta P1.3 one
-complete template sudah tervalidasi. Milestone berikutnya adalah P1.4 publish
-lifecycle.
+P1.1 authentication and ownership, P1.2 invitation draft, P1.3 one complete
+template, serta P1.4 publish lifecycle sudah tervalidasi. Milestone berikutnya
+adalah P1.5 RSVP end to end.
 
 Dokumen utama:
 
@@ -137,6 +137,7 @@ atau Supabase service-role key.
 
 Autentikasi, profile onboarding, session cookie, editor draft inti, slug,
 template Modern Minimal, preview pemilik, grants, dan RLS sudah tersedia.
-Publish, halaman publik, dan RSVP belum dibuat dan tetap mengikuti urutan di
-`docs/IMPLEMENTATION_PLAN.md`; pembayaran, broadcast WhatsApp, custom domain, QR
-check-in, AI, dan editor drag-and-drop berada di luar MVP.
+Publish/unpublish serta halaman publik `/i/[slug]` juga sudah tersedia. RSVP
+belum dibuat dan tetap mengikuti urutan di `docs/IMPLEMENTATION_PLAN.md`;
+pembayaran, broadcast WhatsApp, custom domain, QR check-in, AI, dan editor
+drag-and-drop berada di luar MVP.
