@@ -69,7 +69,7 @@ Alur autentikasi lokal tersedia di `/register`, `/login`, dan
 `/forgot-password`. Email konfirmasi dan reset lokal ditangkap Mailpit; lihat URL
 Mailpit dengan `npx supabase status`. Setelah masuk, buat draft melalui
 `/dashboard/invitations/new`; editor menyimpan slug, nama pasangan, serta satu
-rangkaian acara.
+rangkaian acara. Ringkasan perkembangan produk tersedia di `/changelog`.
 
 ## Quality commands
 

@@ -9,3 +9,20 @@ test("shows the product landing page", async ({ page }) => {
     }),
   ).toBeVisible();
 });
+
+test("shows completed milestones and separates the roadmap", async ({
+  page,
+}) => {
+  await page.goto("/changelog");
+
+  await expect(
+    page.getByRole("heading", { name: "Changelog UndanganDigital" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Draft undangan" }),
+  ).toBeVisible();
+  await expect(page.getByText("6 milestone tervalidasi")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Arah berikutnya" }),
+  ).toBeVisible();
+});

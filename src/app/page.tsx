@@ -27,6 +27,12 @@ export default function Home() {
           >
             Masuk
           </Link>
+          <Link
+            href="/changelog"
+            className="inline-flex min-h-11 items-center px-2 font-semibold text-rose-800 hover:underline"
+          >
+            Lihat changelog
+          </Link>
         </div>
       </section>
     </main>
