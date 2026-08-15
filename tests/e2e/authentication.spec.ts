@@ -63,3 +63,44 @@ test("password reset request does not disclose account existence", async ({
     ),
   ).toBeVisible();
 });
+
+test("owner creates and updates one invitation draft", async ({ page }) => {
+  const testRun = Date.now();
+  const email = `invitation-${testRun}@example.test`;
+  const slug = `dewi-rizky-${testRun}`;
+
+  await page.goto("/register");
+  await page.getByLabel("Nama tampilan").fill("Pemilik Undangan");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Kata sandi", { exact: true }).fill("rahasia-aman-123");
+  await page.getByLabel("Ulangi kata sandi").fill("rahasia-aman-123");
+  await page.getByRole("button", { name: "Daftar" }).click();
+  await page.getByLabel("Nama tampilan").fill("Pemilik Undangan");
+  await page.getByRole("button", { name: "Simpan profil" }).click();
+
+  await page.getByRole("link", { name: "Buat undangan" }).click();
+  await page.getByLabel("Slug undangan").fill(`Dewi & Rizky ${testRun}`);
+  await page.getByLabel("Nama pasangan pertama").fill("Dewi");
+  await page.getByLabel("Nama pasangan kedua").fill("Rizky");
+  await page.getByLabel("Nama acara").fill("Akad nikah");
+  await page.getByLabel("Tanggal").fill("2027-04-24");
+  await page.getByLabel("Waktu", { exact: true }).fill("09:30");
+  await page.getByLabel("Zona waktu").selectOption("Asia/Jakarta");
+  await page.getByLabel("Nama lokasi").fill("Gedung Bahagia");
+  await page.getByLabel("Alamat lengkap").fill("Jakarta Selatan");
+  await page.getByRole("button", { name: "Buat draft undangan" }).click();
+
+  await expect(page).toHaveURL(/\/dashboard\/invitations\/.+\/content/);
+  await expect(page.getByText("Draft undangan berhasil dibuat.")).toBeVisible();
+  await expect(page.getByLabel("Slug undangan")).toHaveValue(slug);
+
+  await page.getByLabel("Nama lokasi").fill("Gedung Bahagia Baru");
+  await page.getByRole("button", { name: "Simpan perubahan" }).click();
+  await expect(
+    page.getByText("Perubahan draft berhasil disimpan."),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "Kembali ke dashboard" }).click();
+  await expect(page.getByText(`/i/${slug}`)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Edit draft" })).toBeVisible();
+});

@@ -11,8 +11,8 @@ export default function Home() {
           Mulai undangan digital Anda.
         </h1>
         <p className="mt-5 max-w-xl text-base leading-7 text-stone-600 sm:text-lg">
-          Buat akun untuk menyiapkan profil pemilik. Editor undangan akan hadir
-          pada tahap berikutnya.
+          Buat akun, lengkapi profil, lalu siapkan data inti undangan Anda dalam
+          satu alur yang aman.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
           <Link

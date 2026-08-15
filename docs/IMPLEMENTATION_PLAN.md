@@ -1,8 +1,8 @@
 # Implementation Plan — UndanganDigital
 
 **Status:** Active  
-**Current phase:** Phase 0  
-**Last updated:** 2026-08-11
+**Current phase:** Phase 1
+**Last updated:** 2026-08-15
 
 Dokumen ini mengatur urutan delivery. Scope dan acceptance criteria tetap berasal dari `PRD.md`; keputusan teknis berasal dari `ARCHITECTURE.md`.
 
@@ -88,10 +88,10 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P1.2 Invitation draft
 
-- [ ] Buat satu undangan per akun dengan status draft.
-- [ ] Implementasi editor data inti: pasangan dan satu rangkaian acara.
-- [ ] Implementasi slug unik dan reserved words.
-- [ ] Simpan draft dengan validation serta loading/error feedback.
+- [x] Buat satu undangan per akun dengan status draft.
+- [x] Implementasi editor data inti: pasangan dan satu rangkaian acara.
+- [x] Implementasi slug unik dan reserved words.
+- [x] Simpan draft dengan validation serta loading/error feedback.
 
 ### P1.3 One complete template
 

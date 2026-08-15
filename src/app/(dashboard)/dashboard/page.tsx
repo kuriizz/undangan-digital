@@ -16,6 +16,10 @@ export default async function DashboardPage({
     .select("display_name")
     .eq("id", user.id)
     .maybeSingle();
+  const { data: invitation } = await supabase
+    .from("invitations")
+    .select("id, slug, status, draft_revision, draft_content")
+    .maybeSingle();
 
   if (!profile) {
     redirect("/onboarding");
@@ -41,19 +45,53 @@ export default async function DashboardPage({
 
         <AuthMessage error={params.error} success={params.success} />
 
-        <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-6">
-          <h2 className="font-semibold text-stone-900">Profil akun</h2>
-          <p className="mt-2 text-sm leading-6 text-stone-600">
-            Autentikasi dan isolasi kepemilikan sudah aktif. Pembuatan undangan
-            baru dimulai pada P1.2.
-          </p>
-          <Link
-            href="/onboarding"
-            className="mt-4 inline-flex font-semibold text-rose-800 hover:underline"
-          >
-            Ubah nama tampilan
-          </Link>
-        </div>
+        {invitation ? (
+          <div className="rounded-2xl border border-stone-200 bg-stone-50 p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-rose-800">
+                  Undangan Anda
+                </p>
+                <h2 className="mt-1 text-xl font-semibold text-stone-950">
+                  /i/{invitation.slug}
+                </h2>
+                <p className="mt-2 text-sm text-stone-600">
+                  Status {invitation.status} · revisi{" "}
+                  {invitation.draft_revision}
+                </p>
+              </div>
+              <Link
+                href={`/dashboard/invitations/${invitation.id}/content`}
+                className="inline-flex min-h-11 items-center rounded-xl bg-rose-700 px-5 font-semibold text-white hover:bg-rose-800"
+              >
+                Edit draft
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-6">
+            <h2 className="font-semibold text-stone-900">
+              Mulai undangan pertama Anda
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-stone-600">
+              Isi nama pasangan, slug, dan satu rangkaian acara untuk membuat
+              draft pribadi.
+            </p>
+            <Link
+              href="/dashboard/invitations/new"
+              className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-rose-700 px-5 font-semibold text-white hover:bg-rose-800"
+            >
+              Buat undangan
+            </Link>
+          </div>
+        )}
+
+        <Link
+          href="/onboarding"
+          className="inline-flex text-sm font-semibold text-rose-800 hover:underline"
+        >
+          Ubah nama tampilan
+        </Link>
       </section>
     </main>
   );
