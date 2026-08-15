@@ -18,7 +18,7 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ## Phase 0 — Discovery and foundation
 
-**Status:** In progress  
+**Status:** Complete
 **Outcome:** Keputusan produk minimum dikunci dan repository siap menghasilkan vertical slice dengan quality gates yang dapat dijalankan.
 
 ### P0.1 Product decisions
@@ -68,7 +68,7 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 - [x] Aplikasi default berjalan lokal dan dapat dibuild.
 - [x] Semua baseline command tersedia serta lulus.
-- [ ] CI menjalankan quality gate minimum.
+- [x] CI menjalankan quality gate minimum.
 - [x] Migration dapat dijalankan dari database bersih.
 - [x] Test membuktikan pengguna A tidak dapat mengakses data pengguna B.
 - [x] Keputusan terbuka yang memblokir Phase 1 telah ditutup.

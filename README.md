@@ -5,9 +5,8 @@ digital serta mengelola RSVP tamu.
 
 ## Status
 
-Project berada pada **Phase 0 — discovery dan fondasi**. P0.1 sampai P0.4 sudah
-selesai secara lokal. Workflow CI masih perlu dibuktikan di GitHub sebelum exit
-gate Phase 0 ditutup; fitur Phase 1 belum dimulai.
+Project telah menyelesaikan **Phase 0 — discovery dan fondasi**. P0.1 sampai
+P0.4 serta workflow CI sudah tervalidasi. Fitur Phase 1 belum dimulai.
 
 Dokumen utama:
 
