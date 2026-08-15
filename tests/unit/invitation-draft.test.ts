@@ -20,6 +20,8 @@ const validDraft = {
   venueName: "Gedung Bahagia",
   address: "Jakarta",
   mapUrl: "https://maps.example.test/gedung",
+  accent: "rose",
+  typography: "elegant",
 };
 
 describe("invitation slug", () => {
@@ -43,6 +45,12 @@ describe("invitation draft input", () => {
     expect(toDraftContent(input)).toEqual({
       schemaVersion: 1,
       couple: { partnerOneName: "Ayu", partnerTwoName: "Bima" },
+      presentation: {
+        templateKey: "modern-minimal",
+        accent: "rose",
+        typography: "elegant",
+        sections: ["hero", "event"],
+      },
     });
   });
 

@@ -37,6 +37,8 @@ function formValues(formData: FormData): InvitationDraftValues {
     venueName: value("venueName"),
     address: value("address"),
     mapUrl: value("mapUrl"),
+    accent: value("accent"),
+    typography: value("typography"),
   };
 }
 
@@ -143,6 +145,7 @@ export async function saveInvitationDraft(
 
   revalidatePath("/dashboard");
   revalidatePath(`/dashboard/invitations/${input.invitationId}/content`);
+  revalidatePath(`/dashboard/invitations/${input.invitationId}/preview`);
 
   return {
     status: "success",

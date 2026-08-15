@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { invitationAccentKeys, invitationTypographyKeys } from "./content";
+
 export const RESERVED_SLUGS = [
   "admin",
   "api",
@@ -95,6 +97,8 @@ export const invitationDraftSchema = z.object({
       (value) => value === "" || z.url().safeParse(value).success,
       "Tautan peta harus berupa URL yang valid.",
     ),
+  accent: z.enum(invitationAccentKeys),
+  typography: z.enum(invitationTypographyKeys),
 });
 
 export type InvitationDraftInput = z.infer<typeof invitationDraftSchema>;
@@ -120,13 +124,11 @@ export function toDraftContent(input: InvitationDraftInput) {
       partnerOneName: input.partnerOneName,
       partnerTwoName: input.partnerTwoName,
     },
+    presentation: {
+      templateKey: "modern-minimal" as const,
+      accent: input.accent,
+      typography: input.typography,
+      sections: ["hero", "event"] as const,
+    },
   };
 }
-
-export const storedCoupleSchema = z.object({
-  schemaVersion: z.literal(1),
-  couple: z.object({
-    partnerOneName: z.string(),
-    partnerTwoName: z.string(),
-  }),
-});

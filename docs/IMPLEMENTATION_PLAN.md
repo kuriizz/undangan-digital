@@ -95,10 +95,10 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P1.3 One complete template
 
-- [ ] Definisikan versioned content schema.
-- [ ] Render satu template mobile-first.
-- [ ] Implementasikan preview yang membaca draft.
-- [ ] Implementasikan metadata dasar untuk halaman terbit.
+- [x] Definisikan versioned content schema.
+- [x] Render satu template mobile-first.
+- [x] Implementasikan preview yang membaca draft.
+- [x] Implementasikan metadata dasar untuk halaman terbit.
 
 ### P1.4 Publish lifecycle
 

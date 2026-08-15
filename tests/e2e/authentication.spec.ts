@@ -95,12 +95,32 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await expect(page.getByLabel("Slug undangan")).toHaveValue(slug);
 
   await page.getByLabel("Nama lokasi").fill("Gedung Bahagia Baru");
+  await page.getByLabel("Warna aksen").selectOption("sage");
+  await page.getByLabel("Gaya tipografi").selectOption("modern");
   await page.getByRole("button", { name: "Simpan perubahan" }).click();
   await expect(
     page.getByText("Perubahan draft berhasil disimpan."),
   ).toBeVisible();
 
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.getByRole("link", { name: "Lihat preview" }).click();
+  const previewUrl = page.url();
+  await expect(page.getByText("Mode preview")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
+  await expect(page.getByText("Gedung Bahagia Baru")).toBeVisible();
+  await expect(page).toHaveTitle(`Preview Dewi & Rizky | UndanganDigital`);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+
+  await page.getByRole("link", { name: "Kembali mengedit" }).click();
   await page.getByRole("link", { name: "Kembali ke dashboard" }).click();
   await expect(page.getByText(`/i/${slug}`)).toBeVisible();
   await expect(page.getByRole("link", { name: "Edit draft" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Keluar" }).click();
+  await page.goto(previewUrl);
+  await expect(page).toHaveURL(/\/login\?error=/);
 });

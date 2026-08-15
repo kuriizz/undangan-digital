@@ -6,8 +6,9 @@ digital serta mengelola RSVP tamu.
 ## Status
 
 Project berada pada **Phase 1 — invitation vertical slice**. P0.1 sampai P0.4,
-P1.1 authentication and ownership, serta P1.2 invitation draft sudah
-tervalidasi. Milestone berikutnya adalah P1.3 one complete template.
+P1.1 authentication and ownership, P1.2 invitation draft, serta P1.3 one
+complete template sudah tervalidasi. Milestone berikutnya adalah P1.4 publish
+lifecycle.
 
 Dokumen utama:
 
@@ -69,7 +70,9 @@ Alur autentikasi lokal tersedia di `/register`, `/login`, dan
 `/forgot-password`. Email konfirmasi dan reset lokal ditangkap Mailpit; lihat URL
 Mailpit dengan `npx supabase status`. Setelah masuk, buat draft melalui
 `/dashboard/invitations/new`; editor menyimpan slug, nama pasangan, serta satu
-rangkaian acara. Ringkasan perkembangan produk tersedia di `/changelog`.
+rangkaian acara. Preview Modern Minimal milik pemilik tersedia dari editor pada
+`/dashboard/invitations/[id]/preview`. Ringkasan perkembangan produk tersedia di
+`/changelog`.
 
 ## Quality commands
 
@@ -133,7 +136,7 @@ atau Supabase service-role key.
 ## Batas scope saat ini
 
 Autentikasi, profile onboarding, session cookie, editor draft inti, slug,
-grants, dan RLS sudah tersedia. Template/preview, publish, halaman publik, dan
-RSVP belum dibuat dan tetap mengikuti urutan di `docs/IMPLEMENTATION_PLAN.md`;
-pembayaran, broadcast WhatsApp, custom domain, QR check-in, AI, dan editor
-drag-and-drop berada di luar MVP.
+template Modern Minimal, preview pemilik, grants, dan RLS sudah tersedia.
+Publish, halaman publik, dan RSVP belum dibuat dan tetap mengikuti urutan di
+`docs/IMPLEMENTATION_PLAN.md`; pembayaran, broadcast WhatsApp, custom domain, QR
+check-in, AI, dan editor drag-and-drop berada di luar MVP.

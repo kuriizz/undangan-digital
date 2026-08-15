@@ -62,6 +62,16 @@ const completedMilestones = [
       "Menambahkan validasi server, status loading, pesan error, serta penyimpanan atomik.",
     ],
   },
+  {
+    key: "P1.3",
+    title: "Template dan preview",
+    changes: [
+      "Menetapkan schema konten render v1 yang divalidasi pada server.",
+      "Menambahkan template Modern Minimal yang responsif mulai lebar 320 px.",
+      "Menambahkan pilihan warna aksen dan gaya tipografi tanpa mengubah konten.",
+      "Menambahkan preview khusus pemilik dan metadata dasar undangan.",
+    ],
+  },
 ] as const;
 
 const upcomingPhases = [
@@ -69,7 +79,7 @@ const upcomingPhases = [
     phase: "Phase 1",
     status: "Sedang berjalan",
     summary:
-      "Berikutnya: satu template mobile-first dan preview draft, lalu publish lifecycle dan RSVP end-to-end.",
+      "Berikutnya: publish lifecycle, halaman undangan publik, lalu RSVP end-to-end.",
   },
   {
     phase: "Phase 2",
@@ -134,7 +144,7 @@ export default function ChangelogPage() {
               </h2>
             </div>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">
-              6 milestone tervalidasi
+              7 milestone tervalidasi
             </span>
           </div>
 

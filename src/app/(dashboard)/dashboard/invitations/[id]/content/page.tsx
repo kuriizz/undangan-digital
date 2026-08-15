@@ -3,11 +3,9 @@ import { notFound } from "next/navigation";
 
 import { AuthMessage } from "@/features/auth/message";
 import { requireUser } from "@/features/auth/session";
+import { storedInvitationDraftV1Schema } from "@/features/invitations/content";
 import { InvitationForm } from "@/features/invitations/invitation-form";
-import {
-  storedCoupleSchema,
-  type InvitationDraftValues,
-} from "@/features/invitations/schemas";
+import type { InvitationDraftValues } from "@/features/invitations/schemas";
 
 function localEventParts(timestamp: string, timezone: string) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -48,7 +46,9 @@ export default async function InvitationContentPage({
       .maybeSingle(),
   ]);
 
-  const content = storedCoupleSchema.safeParse(invitation?.draft_content);
+  const content = storedInvitationDraftV1Schema.safeParse(
+    invitation?.draft_content,
+  );
   if (!invitation || !event || !content.success) notFound();
 
   const localEvent = localEventParts(event.starts_at, event.timezone);
@@ -64,6 +64,8 @@ export default async function InvitationContentPage({
     venueName: event.venue_name,
     address: event.address,
     mapUrl: event.map_url ?? "",
+    accent: content.data.presentation.accent,
+    typography: content.data.presentation.typography,
   };
 
   return (
@@ -91,12 +93,18 @@ export default async function InvitationContentPage({
             </span>
           </div>
           <p className="mt-3 leading-7 text-stone-600">
-            Simpan perubahan tanpa memengaruhi halaman publik. Preview dan
-            publish akan tersedia pada milestone berikutnya.
+            Simpan perubahan tanpa memengaruhi halaman publik, lalu periksa
+            hasilnya di mode preview sebelum publish tersedia.
           </p>
         </header>
 
         <AuthMessage success={query.success} />
+        <Link
+          href={`/dashboard/invitations/${invitation.id}/preview`}
+          className="inline-flex min-h-11 items-center rounded-xl border border-rose-200 bg-rose-50 px-5 font-semibold text-rose-900 hover:bg-rose-100"
+        >
+          Lihat preview
+        </Link>
         <InvitationForm mode="edit" initialValues={initialValues} />
       </section>
     </main>

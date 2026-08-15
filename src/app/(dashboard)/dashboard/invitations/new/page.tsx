@@ -17,6 +17,8 @@ const initialValues: InvitationDraftValues = {
   venueName: "",
   address: "",
   mapUrl: "",
+  accent: "rose",
+  typography: "elegant",
 };
 
 export default async function NewInvitationPage() {

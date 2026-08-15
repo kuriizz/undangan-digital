@@ -7,6 +7,7 @@ import {
   saveInvitationDraft,
   type InvitationDraftFormState,
 } from "./actions";
+import { invitationAccentKeys, invitationTypographyKeys } from "./content";
 import { invitationTimezones, type InvitationDraftValues } from "./schemas";
 
 type InvitationFormProps = {
@@ -100,6 +101,52 @@ export function InvitationForm({ initialValues, mode }: InvitationFormProps) {
               className={inputClassName}
             />
             <FieldError messages={state.fieldErrors?.partnerTwoName} />
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-4">
+        <legend className="text-lg font-semibold text-stone-950">
+          Tampilan Modern Minimal
+        </legend>
+        <p className="text-sm leading-6 text-stone-600">
+          Pilihan ini hanya mengubah presentasi. Data pasangan dan acara tetap
+          sama.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="block space-y-2 text-sm font-medium text-stone-800">
+            <span>Warna aksen</span>
+            <select
+              name="accent"
+              defaultValue={values.accent}
+              className={inputClassName}
+            >
+              {invitationAccentKeys.map((accent) => (
+                <option key={accent} value={accent}>
+                  {accent === "rose"
+                    ? "Mawar"
+                    : accent === "sage"
+                      ? "Sage"
+                      : "Emas"}
+                </option>
+              ))}
+            </select>
+            <FieldError messages={state.fieldErrors?.accent} />
+          </label>
+          <label className="block space-y-2 text-sm font-medium text-stone-800">
+            <span>Gaya tipografi</span>
+            <select
+              name="typography"
+              defaultValue={values.typography}
+              className={inputClassName}
+            >
+              {invitationTypographyKeys.map((typography) => (
+                <option key={typography} value={typography}>
+                  {typography === "modern" ? "Modern" : "Elegan"}
+                </option>
+              ))}
+            </select>
+            <FieldError messages={state.fieldErrors?.typography} />
           </label>
         </div>
       </fieldset>
