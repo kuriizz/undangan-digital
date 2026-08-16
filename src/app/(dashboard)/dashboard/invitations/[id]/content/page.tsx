@@ -3,9 +3,13 @@ import { notFound } from "next/navigation";
 
 import { AuthMessage } from "@/features/auth/message";
 import { requireUser } from "@/features/auth/session";
-import { storedInvitationDraftV1Schema } from "@/features/invitations/content";
+import { storedInvitationDraftV2Schema } from "@/features/invitations/content";
 import { InvitationForm } from "@/features/invitations/invitation-form";
 import type { InvitationDraftValues } from "@/features/invitations/schemas";
+import {
+  MediaManager,
+  type InvitationMediaItem,
+} from "@/features/media/media-manager";
 
 function localEventParts(timestamp: string, timezone: string) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -32,45 +36,72 @@ export default async function InvitationContentPage({
 }: PageProps<"/dashboard/invitations/[id]/content">) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const { supabase } = await requireUser();
-  const [{ data: invitation }, { data: event }] = await Promise.all([
-    supabase
-      .from("invitations")
-      .select("id, slug, draft_content, draft_revision, status")
-      .eq("id", id)
-      .maybeSingle(),
-    supabase
-      .from("invitation_events")
-      .select("event_name, starts_at, timezone, venue_name, address, map_url")
-      .eq("invitation_id", id)
-      .eq("sort_order", 0)
-      .maybeSingle(),
-  ]);
+  const [{ data: invitation }, { data: events }, { data: media }] =
+    await Promise.all([
+      supabase
+        .from("invitations")
+        .select("id, slug, draft_content, draft_revision, status")
+        .eq("id", id)
+        .maybeSingle(),
+      supabase
+        .from("invitation_events")
+        .select(
+          "event_name, starts_at, timezone, venue_name, address, map_url, sort_order",
+        )
+        .eq("invitation_id", id)
+        .order("sort_order"),
+      supabase
+        .from("invitation_media")
+        .select("id, kind, storage_path, alt_text, sort_order")
+        .eq("invitation_id", id)
+        .order("sort_order"),
+    ]);
 
-  const content = storedInvitationDraftV1Schema.safeParse(
+  const content = storedInvitationDraftV2Schema.safeParse(
     invitation?.draft_content,
   );
-  if (!invitation || !event || !content.success) notFound();
+  if (!invitation || !events?.length || !content.success) notFound();
 
-  const localEvent = localEventParts(event.starts_at, event.timezone);
+  const initialEvents = events.map((event) => {
+    const localEvent = localEventParts(event.starts_at, event.timezone);
+    return {
+      name: event.event_name,
+      date: localEvent.date,
+      time: localEvent.time,
+      timezone: event.timezone,
+      venueName: event.venue_name,
+      address: event.address,
+      mapUrl: event.map_url ?? "",
+    };
+  });
   const initialValues: InvitationDraftValues = {
     invitationId: invitation.id,
     slug: invitation.slug,
     partnerOneName: content.data.couple.partnerOneName,
     partnerTwoName: content.data.couple.partnerTwoName,
-    eventName: event.event_name,
-    eventDate: localEvent.date,
-    eventTime: localEvent.time,
-    timezone: event.timezone,
-    venueName: event.venue_name,
-    address: event.address,
-    mapUrl: event.map_url ?? "",
+    story: content.data.content.story,
+    giftBankName: content.data.content.giftBankName,
+    giftAccountNumber: content.data.content.giftAccountNumber,
+    giftAccountHolder: content.data.content.giftAccountHolder,
+    closingMessage: content.data.content.closingMessage,
+    contactName: content.data.content.contactName,
+    contactPhone: content.data.content.contactPhone,
+    eventsJson: JSON.stringify(initialEvents),
+    sectionsJson: JSON.stringify(content.data.presentation.sections),
     accent: content.data.presentation.accent,
     typography: content.data.presentation.typography,
   };
+  const initialMedia: InvitationMediaItem[] = (media ?? []).map((item) => ({
+    id: item.id,
+    kind: item.kind as "cover" | "gallery",
+    path: item.storage_path,
+    altText: item.alt_text,
+    sortOrder: item.sort_order,
+  }));
 
   return (
     <main className="min-h-screen bg-stone-100 px-5 py-10">
-      <section className="mx-auto w-full max-w-3xl space-y-7 rounded-3xl border border-stone-200 bg-white p-7 shadow-sm sm:p-10">
+      <section className="mx-auto w-full max-w-4xl space-y-7 rounded-3xl border border-stone-200 bg-white p-7 shadow-sm sm:p-10">
         <header>
           <Link
             href="/dashboard"
@@ -94,7 +125,7 @@ export default async function InvitationContentPage({
           </div>
           <p className="mt-3 leading-7 text-stone-600">
             Simpan perubahan tanpa memengaruhi halaman publik, lalu periksa
-            hasilnya di mode preview sebelum publish tersedia.
+            hasilnya di mode preview sebelum menerbitkan ulang.
           </p>
         </header>
 
@@ -105,6 +136,7 @@ export default async function InvitationContentPage({
         >
           Lihat preview
         </Link>
+        <MediaManager invitationId={invitation.id} media={initialMedia} />
         <InvitationForm mode="edit" initialValues={initialValues} />
       </section>
     </main>

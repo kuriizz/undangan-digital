@@ -5,7 +5,7 @@ import {
   invitationSlugSchema,
   normalizeSlug,
   toDraftContent,
-  toEventTimestamp,
+  toRelationalEvents,
 } from "@/features/invitations/schemas";
 
 const validDraft = {
@@ -13,13 +13,34 @@ const validDraft = {
   slug: "ayu-bima",
   partnerOneName: "Ayu",
   partnerTwoName: "Bima",
-  eventName: "Akad nikah",
-  eventDate: "2027-01-10",
-  eventTime: "09:30",
-  timezone: "Asia/Jakarta",
-  venueName: "Gedung Bahagia",
-  address: "Jakarta",
-  mapUrl: "https://maps.example.test/gedung",
+  story: "Cerita kami",
+  giftBankName: "Bank Bahagia",
+  giftAccountNumber: "123456",
+  giftAccountHolder: "Ayu",
+  closingMessage: "Terima kasih",
+  contactName: "Bima",
+  contactPhone: "+62 812 0000",
+  eventsJson: JSON.stringify([
+    {
+      name: "Akad nikah",
+      date: "2027-01-10",
+      time: "09:30",
+      timezone: "Asia/Jakarta",
+      venueName: "Gedung Bahagia",
+      address: "Jakarta",
+      mapUrl: "https://maps.example.test/gedung",
+    },
+    {
+      name: "Resepsi",
+      date: "2027-01-10",
+      time: "12:00",
+      timezone: "Asia/Jakarta",
+      venueName: "Gedung Bahagia",
+      address: "Jakarta",
+      mapUrl: "",
+    },
+  ]),
+  sectionsJson: JSON.stringify(["hero", "story", "events", "closing"]),
   accent: "rose",
   typography: "elegant",
 };
@@ -38,32 +59,44 @@ describe("invitation slug", () => {
 });
 
 describe("invitation draft input", () => {
-  it("validates and converts the first event to UTC", () => {
+  it("validates multiple events and converts them to UTC", () => {
     const input = invitationDraftSchema.parse(validDraft);
+    const events = toRelationalEvents(input);
 
-    expect(toEventTimestamp(input)).toBe("2027-01-10T02:30:00.000Z");
-    expect(toDraftContent(input)).toEqual({
-      schemaVersion: 1,
+    expect(events).toHaveLength(2);
+    expect(events[0].startsAt).toBe("2027-01-10T02:30:00.000Z");
+    expect(toDraftContent(input)).toMatchObject({
+      schemaVersion: 2,
       couple: { partnerOneName: "Ayu", partnerTwoName: "Bima" },
+      content: { story: "Cerita kami" },
       presentation: {
-        templateKey: "modern-minimal",
-        accent: "rose",
-        typography: "elegant",
-        sections: ["hero", "event"],
+        sections: ["hero", "story", "events", "closing"],
       },
     });
   });
 
-  it("rejects impossible dates and invalid map URLs", () => {
+  it("rejects invalid nested events and section order", () => {
     expect(
       invitationDraftSchema.safeParse({
         ...validDraft,
-        eventDate: "2027-02-30",
+        eventsJson: JSON.stringify([
+          {
+            name: "Akad",
+            date: "2027-02-30",
+            time: "09:00",
+            timezone: "Asia/Jakarta",
+            venueName: "Gedung",
+            address: "Jakarta",
+            mapUrl: "",
+          },
+        ]),
       }).success,
     ).toBe(false);
     expect(
-      invitationDraftSchema.safeParse({ ...validDraft, mapUrl: "bukan-url" })
-        .success,
+      invitationDraftSchema.safeParse({
+        ...validDraft,
+        sectionsJson: JSON.stringify(["story", "events"]),
+      }).success,
     ).toBe(false);
   });
 });

@@ -10,7 +10,7 @@ import {
   invitationDraftSchema,
   type InvitationDraftValues,
   toDraftContent,
-  toEventTimestamp,
+  toRelationalEvents,
 } from "./schemas";
 import { getOwnedInvitationPreview } from "./queries";
 
@@ -32,13 +32,15 @@ function formValues(formData: FormData): InvitationDraftValues {
     slug: value("slug"),
     partnerOneName: value("partnerOneName"),
     partnerTwoName: value("partnerTwoName"),
-    eventName: value("eventName"),
-    eventDate: value("eventDate"),
-    eventTime: value("eventTime"),
-    timezone: value("timezone"),
-    venueName: value("venueName"),
-    address: value("address"),
-    mapUrl: value("mapUrl"),
+    story: value("story"),
+    giftBankName: value("giftBankName"),
+    giftAccountNumber: value("giftAccountNumber"),
+    giftAccountHolder: value("giftAccountHolder"),
+    closingMessage: value("closingMessage"),
+    contactName: value("contactName"),
+    contactPhone: value("contactPhone"),
+    eventsJson: value("eventsJson"),
+    sectionsJson: value("sectionsJson"),
     accent: value("accent"),
     typography: value("typography"),
   };
@@ -86,12 +88,7 @@ export async function createInvitationDraft(
   const { data, error } = await supabase.rpc("create_invitation_draft", {
     p_slug: input.slug,
     p_draft_content: toDraftContent(input),
-    p_event_name: input.eventName,
-    p_starts_at: toEventTimestamp(input),
-    p_timezone: input.timezone,
-    p_venue_name: input.venueName,
-    p_address: input.address,
-    p_map_url: input.mapUrl || null,
+    p_events: toRelationalEvents(input),
   });
 
   if (error || typeof data !== "string") {
@@ -129,12 +126,7 @@ export async function saveInvitationDraft(
     p_invitation_id: input.invitationId,
     p_slug: input.slug,
     p_draft_content: toDraftContent(input),
-    p_event_name: input.eventName,
-    p_starts_at: toEventTimestamp(input),
-    p_timezone: input.timezone,
-    p_venue_name: input.venueName,
-    p_address: input.address,
-    p_map_url: input.mapUrl || null,
+    p_events: toRelationalEvents(input),
   });
 
   if (error) {

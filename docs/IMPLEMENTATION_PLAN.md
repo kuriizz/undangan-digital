@@ -1,7 +1,7 @@
 # Implementation Plan — UndanganDigital
 
 **Status:** Active  
-**Current phase:** Phase 2 (not started)
+**Current phase:** Phase 2
 **Last updated:** 2026-08-16
 
 Dokumen ini mengatur urutan delivery. Scope dan acceptance criteria tetap berasal dari `PRD.md`; keputusan teknis berasal dari `ARCHITECTURE.md`.
@@ -125,16 +125,16 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ## Phase 2 — MVP beta
 
-**Status:** Not started  
+**Status:** In progress
 **Requirements:** Sisa requirement MVP pada PRD.  
 **Outcome:** Produk cukup lengkap dan aman untuk dipakai 5–10 pasangan beta tanpa pendampingan intensif.
 
 ### P2.1 Content completeness
 
-- [ ] Beberapa rangkaian acara.
-- [ ] Cerita, galeri, peta, hadiah, dan penutup.
-- [ ] Upload media dengan ownership, validasi, serta lifecycle penghapusan.
-- [ ] Konfigurasi urutan dan visibility section.
+- [x] Beberapa rangkaian acara.
+- [x] Cerita, galeri, peta, hadiah, dan penutup.
+- [x] Upload media dengan ownership, validasi, serta lifecycle penghapusan.
+- [x] Konfigurasi urutan dan visibility section.
 
 ### P2.2 Template set
 

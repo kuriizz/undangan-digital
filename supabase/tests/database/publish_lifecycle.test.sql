@@ -140,7 +140,7 @@ select is(
 );
 select is(
   (
-    select published_content -> 'event' ->> 'venueName'
+    select published_content -> 'events' -> 0 ->> 'venueName'
     from public.invitations
     where slug = 'publish-test'
   ),

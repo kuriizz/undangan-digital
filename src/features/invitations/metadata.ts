@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 
-import type { InvitationDocumentV1 } from "./content";
+import type { InvitationDocument } from "./content";
 
 export function createInvitationMetadata(
-  document: InvitationDocumentV1,
+  document: InvitationDocument,
   options: { preview: boolean },
 ): Metadata {
   const names = `${document.couple.partnerOneName} & ${document.couple.partnerTwoName}`;
   const title = options.preview
     ? `Preview ${names} | UndanganDigital`
     : `${names} | Undangan Pernikahan`;
-  const description = `Undangan pernikahan ${names}. ${document.event.name} di ${document.event.venueName}.`;
+  const firstEvent = document.events[0];
+  const description = `Undangan pernikahan ${names}. ${firstEvent.name} di ${firstEvent.venueName}.`;
 
   return {
     title,

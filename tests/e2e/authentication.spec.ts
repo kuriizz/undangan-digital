@@ -94,7 +94,22 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await expect(page.getByText("Draft undangan berhasil dibuat.")).toBeVisible();
   await expect(page.getByLabel("Slug undangan")).toHaveValue(slug);
 
-  await page.getByLabel("Nama lokasi").fill("Gedung Bahagia Baru");
+  await page.getByRole("button", { name: "+ Tambah acara" }).click();
+  await page.getByLabel("Nama acara").nth(1).fill("Resepsi");
+  await page.getByLabel("Tanggal").nth(1).fill("2027-04-24");
+  await page.getByLabel("Waktu", { exact: true }).nth(1).fill("12:00");
+  await page.getByLabel("Nama lokasi").nth(1).fill("Gedung Bahagia Baru");
+  await page.getByLabel("Alamat lengkap").nth(1).fill("Jakarta Selatan");
+  await page
+    .getByLabel("Cerita pasangan (opsional)")
+    .fill("Kami bertemu dan tumbuh bersama di Jakarta.");
+  await page.getByLabel("Nama bank atau dompet digital").fill("Bank Uji");
+  await page.getByLabel("Nomor rekening").fill("1234567890");
+  await page.getByLabel("Nama pemilik rekening").fill("Dewi");
+  await page
+    .getByLabel("Pesan penutup (opsional)")
+    .fill("Terima kasih atas doa dan kehadiran Anda.");
+  await page.getByLabel("Nama lokasi").first().fill("Gedung Bahagia Baru");
   await page.getByLabel("Warna aksen").selectOption("sage");
   await page.getByLabel("Gaya tipografi").selectOption("modern");
   await page.getByRole("button", { name: "Simpan perubahan" }).click();
@@ -102,12 +117,60 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
     page.getByText("Perubahan draft berhasil disimpan."),
   ).toBeVisible();
 
+  await page.getByLabel("Unggah foto sampul").setInputFiles({
+    name: "cover.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      "base64",
+    ),
+  });
+  await page
+    .getByRole("button", { name: "Unggah", exact: true })
+    .first()
+    .click();
+  await expect(page.getByText("Foto berhasil diunggah.")).toBeVisible();
+
+  await page.getByLabel("Tambah foto galeri").setInputFiles({
+    name: "gallery.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      "base64",
+    ),
+  });
+  await page.getByLabel("Teks alternatif").nth(1).fill("Foto galeri uji");
+  await page
+    .getByRole("button", { name: "Unggah", exact: true })
+    .nth(1)
+    .click();
+  const galleryImage = page.getByAltText("Foto galeri uji");
+  await expect(galleryImage).toBeVisible();
+  await galleryImage
+    .locator("xpath=ancestor::article")
+    .getByRole("button", { name: "Hapus" })
+    .click();
+  await expect(page.getByText("Foto berhasil dihapus.")).toBeVisible();
+  await expect(galleryImage).toHaveCount(0);
+  const ownerCoverPath = await page
+    .getByAltText("Foto sampul")
+    .getAttribute("src");
+  const coverMediaId = ownerCoverPath?.split("/").at(-1);
+  expect(coverMediaId).toBeTruthy();
+  const publicMediaPath = `/media/${coverMediaId}`;
+  expect((await page.request.get(publicMediaPath)).status()).toBe(404);
+
   await page.setViewportSize({ width: 320, height: 800 });
   await page.getByRole("link", { name: "Lihat preview" }).click();
   const previewUrl = page.url();
   await expect(page.getByText("Mode preview")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
-  await expect(page.getByText("Gedung Bahagia Baru")).toBeVisible();
+  await expect(page.getByText("Gedung Bahagia Baru").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Resepsi" })).toBeVisible();
+  await expect(
+    page.getByText("Kami bertemu dan tumbuh bersama di Jakarta."),
+  ).toBeVisible();
+  await expect(page.getByAltText("Foto sampul pasangan")).toBeVisible();
   await expect(page).toHaveTitle(`Preview Dewi & Rizky | UndanganDigital`);
   expect(
     await page.evaluate(
@@ -129,7 +192,10 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
 
   await page.goto(publicPath!);
   await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
-  await expect(page.getByText("Gedung Bahagia Baru")).toBeVisible();
+  await expect(page.getByText("Gedung Bahagia Baru").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Resepsi" })).toBeVisible();
+  await expect(page.getByText("Bank Uji")).toBeVisible();
+  await expect(page.getByAltText("Foto sampul pasangan")).toBeVisible();
   await expect(page).toHaveTitle("Dewi & Rizky | Undangan Pernikahan");
   await page.getByLabel("Nama", { exact: true }).fill("Tamu E2E");
   await page.getByLabel("Kehadiran").selectOption("attending");
@@ -154,6 +220,7 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await expect(
     page.getByText("Undangan berhasil dinonaktifkan."),
   ).toBeVisible();
+  expect((await page.request.get(publicMediaPath)).status()).toBe(404);
 
   const unpublishedResponse = await page.goto(publicPath!);
   expect(unpublishedResponse?.status()).toBe(404);

@@ -10,13 +10,33 @@ const initialValues: InvitationDraftValues = {
   slug: "",
   partnerOneName: "",
   partnerTwoName: "",
-  eventName: "Akad nikah",
-  eventDate: "",
-  eventTime: "09:00",
-  timezone: "Asia/Jakarta",
-  venueName: "",
-  address: "",
-  mapUrl: "",
+  story: "",
+  giftBankName: "",
+  giftAccountNumber: "",
+  giftAccountHolder: "",
+  closingMessage: "",
+  contactName: "",
+  contactPhone: "",
+  eventsJson: JSON.stringify([
+    {
+      name: "Akad nikah",
+      date: "",
+      time: "09:00",
+      timezone: "Asia/Jakarta",
+      venueName: "",
+      address: "",
+      mapUrl: "",
+    },
+  ]),
+  sectionsJson: JSON.stringify([
+    "hero",
+    "events",
+    "story",
+    "gallery",
+    "map",
+    "gifts",
+    "closing",
+  ]),
   accent: "rose",
   typography: "elegant",
 };
@@ -49,8 +69,8 @@ export default async function NewInvitationPage() {
             Buat draft undangan
           </h1>
           <p className="mt-2 leading-7 text-stone-600">
-            Isi data inti pasangan dan acara pertama. Draft belum dapat dibuka
-            oleh tamu sampai fitur publish tersedia.
+            Isi data pasangan, rangkaian acara, dan section undangan. Draft
+            tidak berubah di halaman publik sampai diterbitkan.
           </p>
         </header>
 

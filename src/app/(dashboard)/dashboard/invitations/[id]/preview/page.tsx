@@ -91,7 +91,12 @@ export default async function InvitationPreviewPage({
         </div>
       </aside>
       <div className="mx-auto max-w-5xl bg-white shadow-xl">
-        <ModernMinimalTemplate document={invitation.document} />
+        <ModernMinimalTemplate
+          document={invitation.document}
+          mediaUrl={(media) =>
+            `/api/invitations/${invitation.id}/media/${media.id}`
+          }
+        />
       </div>
     </main>
   );

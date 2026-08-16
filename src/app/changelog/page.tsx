@@ -92,6 +92,16 @@ const completedMilestones = [
       "Menambahkan ringkasan serta daftar RSVP yang hanya dapat dibaca pemilik.",
     ],
   },
+  {
+    key: "P2.1",
+    title: "Kelengkapan konten",
+    changes: [
+      "Menambahkan beberapa rangkaian acara, cerita pasangan, peta, hadiah, kontak, dan penutup.",
+      "Menambahkan pengaturan urutan serta visibility section tanpa mengubah template.",
+      "Menambahkan satu foto sampul dan maksimal sepuluh foto galeri melalui Supabase Storage.",
+      "Menegakkan validasi JPEG/PNG/WebP 5 MB, ownership path, RLS, serta penghapusan file dan metadata.",
+    ],
+  },
 ] as const;
 
 const roadmapPhases = [
@@ -103,9 +113,9 @@ const roadmapPhases = [
   },
   {
     phase: "Phase 2",
-    status: "Direncanakan",
+    status: "Sedang berjalan",
     summary:
-      "Melengkapi konten, media, tiga template beta, pengelolaan tamu, ucapan, dan hardening untuk beta.",
+      "P2.1 kelengkapan konten dan media selesai; berikutnya menambah dua template beta, pengelolaan tamu, ucapan, dan hardening.",
   },
   {
     phase: "Phase 3",
@@ -164,7 +174,7 @@ export default function ChangelogPage() {
               </h2>
             </div>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">
-              9 milestone tervalidasi
+              10 milestone tervalidasi
             </span>
           </div>
 
