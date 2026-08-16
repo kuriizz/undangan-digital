@@ -109,17 +109,17 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P1.5 RSVP end to end
 
-- [ ] Buat form RSVP publik dengan validasi server.
-- [ ] Tambahkan rate limit dasar dan aturan deduplikasi yang sudah diputuskan.
-- [ ] Tampilkan konfirmasi submit yang jelas.
-- [ ] Tampilkan daftar dan ringkasan RSVP hanya kepada pemilik.
+- [x] Buat form RSVP publik dengan validasi server.
+- [x] Tambahkan rate limit dasar dan aturan deduplikasi yang sudah diputuskan.
+- [x] Tampilkan konfirmasi submit yang jelas.
+- [x] Tampilkan daftar dan ringkasan RSVP hanya kepada pemilik.
 
 ### Exit gate Phase 1
 
-- [ ] E2E login → create → preview → publish lulus.
-- [ ] E2E anonymous RSVP → owner dashboard lulus.
-- [ ] Draft dan unpublished invitation tidak terbuka publik.
-- [ ] Cross-tenant integration tests lulus.
+- [x] E2E login → create → preview → publish lulus.
+- [x] E2E anonymous RSVP → owner dashboard lulus.
+- [x] Draft dan unpublished invitation tidak terbuka publik.
+- [x] Cross-tenant integration tests lulus.
 - [ ] Mobile smoke test pada ukuran 320 px dan perangkat nyata lulus.
 - [ ] Tidak ada issue severity kritis/tinggi yang terbuka pada alur utama.
 

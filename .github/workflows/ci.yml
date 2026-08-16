@@ -76,6 +76,7 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321" >> "$GITHUB_ENV"
           echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$(npx supabase status -o json | jq -r '.PUBLISHABLE_KEY')" >> "$GITHUB_ENV"
+          echo "RSVP_FINGERPRINT_SECRET=ci-only-rsvp-fingerprint-secret-123456" >> "$GITHUB_ENV"
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

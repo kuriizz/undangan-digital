@@ -82,6 +82,16 @@ const completedMilestones = [
       "Membatasi lookup publik agar anonymous tidak memperoleh data draft atau kepemilikan.",
     ],
   },
+  {
+    key: "P1.5",
+    title: "RSVP end to end",
+    changes: [
+      "Menambahkan form RSVP umum pada undangan yang sedang terbit.",
+      "Menambahkan idempotency teknis dan rate limit lima percobaan per 10 menit.",
+      "Menambahkan validasi jumlah hadir maksimal 10 orang dan konfirmasi submit.",
+      "Menambahkan ringkasan serta daftar RSVP yang hanya dapat dibaca pemilik.",
+    ],
+  },
 ] as const;
 
 const upcomingPhases = [
@@ -89,7 +99,7 @@ const upcomingPhases = [
     phase: "Phase 1",
     status: "Sedang berjalan",
     summary:
-      "Berikutnya: RSVP publik end-to-end dan ringkasan respons khusus pemilik.",
+      "Seluruh milestone implementasi selesai; exit gate perangkat nyata masih perlu dibuktikan sebelum Phase 1 ditutup.",
   },
   {
     phase: "Phase 2",
@@ -154,7 +164,7 @@ export default function ChangelogPage() {
               </h2>
             </div>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">
-              8 milestone tervalidasi
+              9 milestone tervalidasi
             </span>
           </div>
 

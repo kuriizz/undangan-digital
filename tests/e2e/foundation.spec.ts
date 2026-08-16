@@ -21,7 +21,7 @@ test("shows completed milestones and separates the roadmap", async ({
   await expect(
     page.getByRole("heading", { name: "Draft undangan" }),
   ).toBeVisible();
-  await expect(page.getByText("8 milestone tervalidasi")).toBeVisible();
+  await expect(page.getByText("9 milestone tervalidasi")).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Arah berikutnya" }),
   ).toBeVisible();

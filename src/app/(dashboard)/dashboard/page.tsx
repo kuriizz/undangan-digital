@@ -20,6 +20,14 @@ export default async function DashboardPage({
     .from("invitations")
     .select("id, slug, status, draft_revision, draft_content")
     .maybeSingle();
+  const { data: rsvpData } = invitation
+    ? await supabase
+        .from("rsvps")
+        .select("id, name, attendance, party_size, note, created_at")
+        .eq("invitation_id", invitation.id)
+        .order("created_at", { ascending: false })
+    : { data: [] };
+  const rsvps = rsvpData ?? [];
 
   if (!profile) {
     redirect("/onboarding");
@@ -95,6 +103,59 @@ export default async function DashboardPage({
             </Link>
           </div>
         )}
+
+        {invitation ? (
+          <section className="rounded-2xl border border-stone-200 bg-white p-6">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-rose-800">RSVP</p>
+                <h2 className="mt-1 text-xl font-semibold text-stone-950">
+                  Respons tamu
+                </h2>
+              </div>
+              <p className="text-sm text-stone-600">
+                {rsvps.filter((rsvp) => rsvp.attendance === "attending").length}{" "}
+                hadir
+                {" · "}
+                {
+                  rsvps.filter((rsvp) => rsvp.attendance === "not_attending")
+                    .length
+                }{" "}
+                tidak hadir
+                {" · "}
+                {rsvps.reduce((total, rsvp) => total + rsvp.party_size, 0)}{" "}
+                orang
+              </p>
+            </div>
+            {rsvps.length ? (
+              <ul className="mt-5 divide-y divide-stone-200 border-y border-stone-200">
+                {rsvps.map((rsvp) => (
+                  <li key={rsvp.id} className="py-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-semibold text-stone-950">
+                        {rsvp.name}
+                      </p>
+                      <span className="text-sm font-medium text-stone-600">
+                        {rsvp.attendance === "attending"
+                          ? `Hadir · ${rsvp.party_size} orang`
+                          : "Tidak hadir"}
+                      </span>
+                    </div>
+                    {rsvp.note ? (
+                      <p className="mt-2 text-sm leading-6 text-stone-600">
+                        {rsvp.note}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm leading-6 text-stone-600">
+                Belum ada RSVP yang masuk.
+              </p>
+            )}
+          </section>
+        ) : null}
 
         <Link
           href="/onboarding"

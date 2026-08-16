@@ -1,6 +1,9 @@
+import type { ReactNode } from "react";
+
 import type { InvitationDocumentV1 } from "@/features/invitations/content";
 
 type ModernMinimalTemplateProps = {
+  afterSections?: ReactNode;
   document: InvitationDocumentV1;
 };
 
@@ -36,6 +39,7 @@ const timezoneLabels = {
 } as const;
 
 export function ModernMinimalTemplate({
+  afterSections,
   document,
 }: ModernMinimalTemplateProps) {
   const accent = accentStyles[document.presentation.accent];
@@ -149,6 +153,7 @@ export function ModernMinimalTemplate({
   return (
     <article className="min-w-0 overflow-hidden bg-white text-stone-900">
       {document.presentation.sections.map((section) => sections[section])}
+      {afterSections}
       <footer className="border-t border-stone-200 bg-stone-950 px-5 py-8 text-center text-sm text-stone-400">
         Dibuat dengan UndanganDigital
       </footer>

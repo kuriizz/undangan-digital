@@ -131,11 +131,23 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
   await expect(page.getByText("Gedung Bahagia Baru")).toBeVisible();
   await expect(page).toHaveTitle("Dewi & Rizky | Undangan Pernikahan");
+  await page.getByLabel("Nama", { exact: true }).fill("Tamu E2E");
+  await page.getByLabel("Kehadiran").selectOption("attending");
+  await page.getByLabel("Jumlah hadir").fill("2");
+  await page.getByLabel("Catatan (opsional)").fill("Kami akan hadir");
+  await page.getByRole("button", { name: "Kirim RSVP" }).click();
+  await expect(
+    page.getByText("Terima kasih. RSVP Anda berhasil dikirim."),
+  ).toBeVisible();
 
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Kata sandi").fill("rahasia-aman-123");
   await page.getByRole("button", { name: "Masuk" }).click();
+  await expect(page.getByText("Tamu E2E")).toBeVisible();
+  await expect(
+    page.getByText("Hadir · 2 orang", { exact: true }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "Edit draft" }).click();
   await page.getByRole("link", { name: "Lihat preview" }).click();
   await page.getByRole("button", { name: "Nonaktifkan" }).click();

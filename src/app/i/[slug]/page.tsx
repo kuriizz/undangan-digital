@@ -1,8 +1,11 @@
+import { randomUUID } from "node:crypto";
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { createInvitationMetadata } from "@/features/invitations/metadata";
 import { getPublishedInvitationBySlug } from "@/features/invitations/queries";
+import { PublicRsvpForm } from "@/features/rsvp/public-rsvp-form";
 import { ModernMinimalTemplate } from "@/features/templates/modern-minimal/modern-minimal-template";
 
 export async function generateMetadata({
@@ -31,7 +34,15 @@ export default async function PublishedInvitationPage({
 
   return (
     <main className="min-h-screen bg-white">
-      <ModernMinimalTemplate document={invitation.document} />
+      <ModernMinimalTemplate
+        document={invitation.document}
+        afterSections={
+          <PublicRsvpForm
+            slug={invitation.slug}
+            idempotencyKey={randomUUID()}
+          />
+        }
+      />
     </main>
   );
 }
