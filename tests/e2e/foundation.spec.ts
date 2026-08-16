@@ -23,6 +23,11 @@ test("shows completed milestones and separates the roadmap", async ({
   ).toBeVisible();
   await expect(page.getByText("9 milestone tervalidasi")).toBeVisible();
   await expect(
+    page.getByText(
+      "Vertical slice login hingga RSVP telah tervalidasi, termasuk smoke test pada perangkat nyata tanpa issue kritis atau tinggi.",
+    ),
+  ).toBeVisible();
+  await expect(
     page.getByRole("heading", { name: "Arah berikutnya" }),
   ).toBeVisible();
 });

@@ -5,10 +5,10 @@ digital serta mengelola RSVP tamu.
 
 ## Status
 
-Project berada pada **Phase 1 — invitation vertical slice**. P0.1 sampai P0.4,
+**Phase 1 — invitation vertical slice** telah selesai. P0.1 sampai P0.4,
 P1.1 authentication and ownership, P1.2 invitation draft, P1.3 one complete
-template, P1.4 publish lifecycle, serta P1.5 RSVP end to end sudah tervalidasi.
-Phase 1 masih menunggu exit gate perangkat nyata sebelum ditutup.
+template, P1.4 publish lifecycle, serta P1.5 RSVP end to end sudah tervalidasi,
+termasuk smoke test pada perangkat nyata. Phase 2 belum dimulai.
 
 Dokumen utama:
 

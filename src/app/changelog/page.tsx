@@ -94,12 +94,12 @@ const completedMilestones = [
   },
 ] as const;
 
-const upcomingPhases = [
+const roadmapPhases = [
   {
     phase: "Phase 1",
-    status: "Sedang berjalan",
+    status: "Selesai",
     summary:
-      "Seluruh milestone implementasi selesai; exit gate perangkat nyata masih perlu dibuktikan sebelum Phase 1 ditutup.",
+      "Vertical slice login hingga RSVP telah tervalidasi, termasuk smoke test pada perangkat nyata tanpa issue kritis atau tinggi.",
   },
   {
     phase: "Phase 2",
@@ -133,7 +133,7 @@ export default function ChangelogPage() {
             ← Kembali ke beranda
           </Link>
           <span className="text-sm text-stone-500">
-            Diperbarui 15 Agustus 2026
+            Diperbarui 16 Agustus 2026
           </span>
         </nav>
 
@@ -211,7 +211,7 @@ export default function ChangelogPage() {
             Arah berikutnya
           </h2>
           <div className="mt-7 grid gap-4 sm:grid-cols-2">
-            {upcomingPhases.map((item) => (
+            {roadmapPhases.map((item) => (
               <article
                 key={item.phase}
                 className="rounded-2xl border border-stone-200 bg-stone-50 p-6"

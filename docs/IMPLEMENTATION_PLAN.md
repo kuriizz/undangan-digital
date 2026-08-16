@@ -1,8 +1,8 @@
 # Implementation Plan — UndanganDigital
 
 **Status:** Active  
-**Current phase:** Phase 1
-**Last updated:** 2026-08-15
+**Current phase:** Phase 2 (not started)
+**Last updated:** 2026-08-16
 
 Dokumen ini mengatur urutan delivery. Scope dan acceptance criteria tetap berasal dari `PRD.md`; keputusan teknis berasal dari `ARCHITECTURE.md`.
 
@@ -75,7 +75,7 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ## Phase 1 — Invitation vertical slice
 
-**Status:** In progress
+**Status:** Complete
 **Requirements:** AUTH-01–03, INV-01–08 secara minimum, TPL-02–04 untuk satu template, RSVP-01–03 minimum, PUB-01–03 minimum.  
 **Outcome:** Satu pengguna dapat menyelesaikan alur login sampai menerima RSVP pada undangan terbit.
 
@@ -120,8 +120,8 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 - [x] E2E anonymous RSVP → owner dashboard lulus.
 - [x] Draft dan unpublished invitation tidak terbuka publik.
 - [x] Cross-tenant integration tests lulus.
-- [ ] Mobile smoke test pada ukuran 320 px dan perangkat nyata lulus.
-- [ ] Tidak ada issue severity kritis/tinggi yang terbuka pada alur utama.
+- [x] Mobile smoke test pada ukuran 320 px dan perangkat nyata lulus.
+- [x] Tidak ada issue severity kritis/tinggi yang terbuka pada alur utama.
 
 ## Phase 2 — MVP beta
 
