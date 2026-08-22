@@ -112,6 +112,16 @@ const completedMilestones = [
       "Memvalidasi aksesibilitas dasar, reduced motion, dan layout responsif mulai lebar 320 px.",
     ],
   },
+  {
+    key: "P2.3",
+    title: "Tamu dan ucapan",
+    changes: [
+      "Menambahkan CRUD tamu manual, batas rombongan, dan ringkasan tamu yang belum menjawab.",
+      "Menambahkan tautan personal ber-token yang dapat dirotasi serta tombol berbagi melalui WhatsApp.",
+      "Menghubungkan tautan personal ke satu RSVP tamu yang dapat diperbarui tanpa duplikasi.",
+      "Menambahkan ucapan berstatus pending, moderasi pemilik, dan tampilan publik setelah disetujui.",
+    ],
+  },
 ] as const;
 
 const roadmapPhases = [
@@ -125,7 +135,7 @@ const roadmapPhases = [
     phase: "Phase 2",
     status: "Sedang berjalan",
     summary:
-      "P2.1 kelengkapan konten dan P2.2 tiga template beta selesai; berikutnya pengelolaan tamu, ucapan, dan hardening.",
+      "P2.1 kelengkapan konten, P2.2 tiga template beta, serta P2.3 tamu dan ucapan selesai; berikutnya hardening dan kesiapan beta.",
   },
   {
     phase: "Phase 3",
@@ -184,7 +194,7 @@ export default function ChangelogPage() {
               </h2>
             </div>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">
-              11 milestone tervalidasi
+              12 milestone tervalidasi
             </span>
           </div>
 

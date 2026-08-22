@@ -1,6 +1,6 @@
 # Product Requirements Document — Platform Undangan Pernikahan Digital
 
-**Status:** Approved MVP baseline v0.2  
+**Status:** Approved MVP baseline v0.3
 **Pemilik produk:** TBD  
 **Target awal:** Web responsif, Bahasa Indonesia, pasar Indonesia  
 **Prinsip delivery:** Bangun alur utama sampai selesai terlebih dahulu, lalu monetisasi dan optimasi.
@@ -110,7 +110,9 @@ Target adalah hipotesis awal dan harus ditinjau setelah 30 hari data produksi.
 
 ## 6. Di luar ruang lingkup MVP
 
-- Editor bebas drag-and-drop seperti Canva.
+- Editor bebas drag-and-drop seperti Canva. Kandidat editor Advanced pada Phase
+  3 tetap terstruktur dan dibatasi oleh slot serta varian layout sesuai ADR
+  0004.
 - Aplikasi Android/iOS native.
 - Domain khusus milik pelanggan.
 - Pembayaran, paket berlangganan, kupon, dan invoice.
@@ -263,12 +265,14 @@ Estimasi mengasumsikan satu developer full-time dengan desain yang cukup sederha
 - Tambah dua template, galeri, beberapa rangkaian acara, peta, hadiah, ucapan, serta tautan tamu.
 - Moderasi, rate limiting, aksesibilitas, metadata sosial, analytics/error monitoring, dan hardening upload.
 - Uji pada perangkat nyata dan jaringan lambat.
+- Validasi minat, kebutuhan kustomisasi, sensitivitas harga, dan willingness-to-pay untuk kandidat paket Easy dan Advanced tanpa membangun entitlement terlebih dahulu.
 
 **Gate:** minimal 5–10 pasangan beta dapat memakai produk tanpa pendampingan intensif; temuan kritis ditutup.
 
 ### Fase 3 — Komersialisasi (2–3 minggu)
 
 - Paket gratis/berbayar, payment gateway Indonesia, webhook idempotent, invoice, dan status entitlement.
+- Finalisasi kandidat paket Easy dan Advanced dari bukti beta. Easy memakai template serta kontrol terkurasi; Advanced memakai editor terstruktur untuk varian layout dan pemindahan section/block dalam batas yang aman.
 - Domain khusus atau subdomain premium bila tervalidasi.
 - Ekspor RSVP, kuota media, masa aktif undangan, onboarding, dukungan, kebijakan privasi, dan penghapusan akun.
 

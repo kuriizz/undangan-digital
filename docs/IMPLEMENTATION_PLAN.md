@@ -145,10 +145,10 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P2.3 Guests and wishes
 
-- [ ] CRUD tamu manual dan party limit.
-- [ ] Tautan personal aman serta tombol berbagi WhatsApp.
-- [ ] Ucapan tamu dan workflow moderasi pemilik.
-- [ ] Ringkasan belum menjawab untuk tamu yang terdaftar.
+- [x] CRUD tamu manual dan party limit.
+- [x] Tautan personal aman serta tombol berbagi WhatsApp.
+- [x] Ucapan tamu dan workflow moderasi pemilik.
+- [x] Ringkasan belum menjawab untuk tamu yang terdaftar.
 
 ### P2.4 Hardening and beta readiness
 
@@ -158,6 +158,7 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 - [ ] Privacy, terms, report abuse, retention, dan account deletion minimum.
 - [ ] Uji jaringan lambat, perangkat nyata, serta performance budget.
 - [ ] Jalankan beta 5–10 pasangan dan prioritaskan temuan.
+- [ ] Validasi minat, kebutuhan kustomisasi, sensitivitas harga, dan willingness-to-pay untuk kandidat paket Easy dan Advanced.
 
 ### Exit gate Phase 2
 
@@ -172,10 +173,11 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 **Status:** Not started  
 **Outcome:** Produk dapat menerima pembayaran dan memberikan fitur berbayar dengan aman serta konsisten.
 
-- [ ] Validasi struktur paket dan harga dengan pengguna beta.
+- [ ] Finalisasi struktur, nama, alokasi fitur, dan harga paket dari bukti beta.
 - [ ] Pilih payment gateway berdasarkan kebutuhan bisnis Indonesia.
 - [ ] Implementasikan transaksi, signature verification, webhook idempotent, dan audit trail.
 - [ ] Pisahkan entitlement dari komponen tampilan.
+- [ ] Jika bukti beta mendukung, implementasikan Advanced constrained editor dengan schema layout terversi, slot/variant terkontrol, undo/redo, serta preview responsif dan aksesibel.
 - [ ] Tambahkan invoice/status pembayaran dan alur kegagalan/refund yang diperlukan.
 - [ ] Tambahkan kuota media, masa aktif, dan ekspor RSVP sesuai paket.
 - [ ] Finalisasi support, privacy, terms, retention, deletion, dan proses insiden.

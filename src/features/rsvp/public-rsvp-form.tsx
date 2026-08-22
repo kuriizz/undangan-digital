@@ -5,7 +5,10 @@ import { useActionState, useState } from "react";
 import { submitPublicRsvp, type PublicRsvpFormState } from "./actions";
 
 type PublicRsvpFormProps = {
+  guestName?: string;
+  guestToken?: string;
   idempotencyKey: string;
+  partyLimit?: number;
   slug: string;
 };
 
@@ -19,7 +22,13 @@ function FieldError({ messages }: { messages?: string[] }) {
   ) : null;
 }
 
-export function PublicRsvpForm({ idempotencyKey, slug }: PublicRsvpFormProps) {
+export function PublicRsvpForm({
+  guestName,
+  guestToken = "",
+  idempotencyKey,
+  partyLimit = 10,
+  slug,
+}: PublicRsvpFormProps) {
   const [state, formAction, pending] = useActionState(
     submitPublicRsvp,
     initialState,
@@ -38,7 +47,9 @@ export function PublicRsvpForm({ idempotencyKey, slug }: PublicRsvpFormProps) {
           RSVP
         </h2>
         <p className="mt-3 text-center text-sm leading-6 text-stone-600">
-          Satu pengiriman dapat mewakili maksimal 10 orang.
+          {guestName
+            ? `Undangan ini ditujukan untuk ${guestName}, maksimal ${partyLimit} orang.`
+            : "Satu pengiriman dapat mewakili maksimal 10 orang."}
         </p>
 
         {state.message ? (
@@ -56,12 +67,14 @@ export function PublicRsvpForm({ idempotencyKey, slug }: PublicRsvpFormProps) {
 
         <form action={formAction} className="mt-7 space-y-5">
           <input type="hidden" name="slug" value={slug} />
+          <input type="hidden" name="guestToken" value={guestToken} />
           <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
           <label className="block space-y-2 text-sm font-medium text-stone-800">
             <span>Nama</span>
             <input
               name="name"
-              defaultValue={state.values?.name}
+              defaultValue={guestName ?? state.values?.name}
+              readOnly={Boolean(guestName)}
               maxLength={100}
               required
               className={fieldClassName}
@@ -88,7 +101,7 @@ export function PublicRsvpForm({ idempotencyKey, slug }: PublicRsvpFormProps) {
               name="partySize"
               type="number"
               min={attendance === "attending" ? 1 : 0}
-              max={attendance === "attending" ? 10 : 0}
+              max={attendance === "attending" ? partyLimit : 0}
               defaultValue={
                 attendance === "attending" ? (state.values?.partySize ?? 1) : 0
               }
@@ -97,6 +110,20 @@ export function PublicRsvpForm({ idempotencyKey, slug }: PublicRsvpFormProps) {
               className={fieldClassName}
             />
             <FieldError messages={state.fieldErrors?.partySize} />
+          </label>
+          <label className="block space-y-2 text-sm font-medium text-stone-800">
+            <span>Ucapan untuk pasangan (opsional)</span>
+            <textarea
+              name="wish"
+              defaultValue={state.values?.wish}
+              maxLength={500}
+              rows={4}
+              className={`${fieldClassName} py-3`}
+            />
+            <span className="block font-normal text-stone-500">
+              Ucapan tampil setelah disetujui pemilik undangan.
+            </span>
+            <FieldError messages={state.fieldErrors?.wish} />
           </label>
           <label className="block space-y-2 text-sm font-medium text-stone-800">
             <span>Catatan (opsional)</span>

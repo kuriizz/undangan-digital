@@ -23,7 +23,7 @@ export default async function DashboardPage({
   const { data: rsvpData } = invitation
     ? await supabase
         .from("rsvps")
-        .select("id, name, attendance, party_size, note, created_at")
+        .select("id, guest_id, name, attendance, party_size, note, created_at")
         .eq("invitation_id", invitation.id)
         .order("created_at", { ascending: false })
     : { data: [] };
@@ -82,6 +82,12 @@ export default async function DashboardPage({
                   className="inline-flex min-h-11 items-center rounded-xl bg-rose-700 px-5 font-semibold text-white hover:bg-rose-800"
                 >
                   Edit draft
+                </Link>
+                <Link
+                  href={`/dashboard/invitations/${invitation.id}/guests`}
+                  className="inline-flex min-h-11 items-center rounded-xl border border-stone-300 bg-white px-5 font-semibold text-stone-800 hover:bg-stone-100"
+                >
+                  Kelola tamu
                 </Link>
               </div>
             </div>

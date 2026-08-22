@@ -27,6 +27,8 @@ function valuesFrom(formData: FormData): PublicRsvpValues {
     attendance: value("attendance"),
     partySize: value("partySize"),
     note: value("note"),
+    wish: value("wish"),
+    guestToken: value("guestToken"),
     idempotencyKey: value("idempotencyKey"),
   };
 }
@@ -78,6 +80,8 @@ export async function submitPublicRsvp(
     p_attendance: result.data.attendance,
     p_party_size: result.data.partySize,
     p_note: result.data.note,
+    p_wish: result.data.wish,
+    p_guest_token: result.data.guestToken,
     p_idempotency_key: result.data.idempotencyKey,
     p_fingerprint_hash: fingerprint,
   });
@@ -103,6 +107,14 @@ export async function submitPublicRsvp(
     return {
       status: "error",
       message: "Undangan tidak sedang menerima RSVP.",
+      values,
+    };
+  }
+
+  if (response.result === "party_limit_exceeded") {
+    return {
+      status: "error",
+      message: "Jumlah hadir melebihi batas rombongan pada undangan personal.",
       values,
     };
   }

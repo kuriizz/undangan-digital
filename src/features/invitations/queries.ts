@@ -82,3 +82,30 @@ export const getPublishedInvitationBySlug = cache(async (slug: string) => {
     document: document.data,
   };
 });
+
+export async function getPersonalizedGuest(slug: string, token?: string) {
+  if (!token) return null;
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("get_personalized_guest", {
+    p_slug: slug,
+    p_token: token,
+  });
+  const guest = Array.isArray(data) ? data[0] : null;
+  return guest
+    ? {
+        id: guest.guest_id as string,
+        name: guest.guest_name as string,
+        partyLimit: guest.party_limit as number,
+      }
+    : null;
+}
+
+export async function getPublicWishes(slug: string) {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("get_public_wishes", { p_slug: slug });
+  return (data ?? []) as {
+    name: string;
+    message: string;
+    created_at: string;
+  }[];
+}

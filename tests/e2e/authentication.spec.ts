@@ -242,6 +242,46 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await page.getByRole("button", { name: "Terbitkan ulang" }).click();
   await expect(page.getByText("Undangan berhasil diterbitkan.")).toBeVisible();
 
+  await page.getByRole("link", { name: "Kelola tamu" }).click();
+  await page.getByLabel("Nama tamu").fill("Tamu Personal");
+  await page.getByLabel("Batas rombongan").fill("2");
+  await page.getByRole("button", { name: "Tambah", exact: true }).click();
+  await expect(page.getByText("Tamu berhasil ditambahkan.")).toBeVisible();
+  const personalUrl = await page.locator("p.font-mono").textContent();
+  expect(personalUrl).toContain(`${publicPath}?to=`);
+  await expect(
+    page.getByRole("link", { name: "Bagikan via WhatsApp" }),
+  ).toHaveAttribute("href", /^https:\/\/wa\.me\/\?text=/);
+
+  await page.goto(personalUrl!);
+  await expect(page.getByText(/ditujukan untuk Tamu Personal/)).toBeVisible();
+  await expect(page.getByLabel("Nama", { exact: true })).toHaveValue(
+    "Tamu Personal",
+  );
+  await expect(page.getByLabel("Nama", { exact: true })).toHaveAttribute(
+    "readonly",
+    "",
+  );
+  await page.getByLabel("Jumlah hadir").fill("2");
+  await page
+    .getByLabel("Ucapan untuk pasangan (opsional)")
+    .fill("Semoga selalu berbahagia.");
+  await page.getByRole("button", { name: "Kirim RSVP" }).click();
+  await expect(
+    page.getByText("Terima kasih. RSVP Anda berhasil dikirim."),
+  ).toBeVisible();
+
+  await page.goto(
+    `/dashboard/invitations/${previewUrl!.split("/").at(-2)}/guests`,
+  );
+  await expect(page.getByText("Sudah menjawab")).toBeVisible();
+  await expect(page.getByText("Semoga selalu berbahagia.")).toBeVisible();
+  await page.getByRole("button", { name: "Setujui" }).click();
+  await expect(page.getByText("approved", { exact: true })).toBeVisible();
+  await page.goto(publicPath!);
+  await expect(page.getByText("Semoga selalu berbahagia.")).toBeVisible();
+  await page.goto("/dashboard");
+
   await page.getByRole("button", { name: "Keluar" }).click();
   await page.goto(previewUrl!);
   await expect(page).toHaveURL(/\/login\?error=/);
@@ -271,7 +311,10 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await page.getByRole("button", { name: "Masuk" }).click();
   await expect(page.getByText("Tamu E2E")).toBeVisible();
   await expect(
-    page.getByText("Hadir · 2 orang", { exact: true }),
+    page
+      .getByRole("listitem")
+      .filter({ hasText: "Tamu E2E" })
+      .getByText("Hadir · 2 orang", { exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Edit draft" }).click();
   await page.getByRole("link", { name: "Lihat preview" }).click();

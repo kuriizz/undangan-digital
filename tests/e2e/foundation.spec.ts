@@ -21,12 +21,15 @@ test("shows completed milestones and separates the roadmap", async ({
   await expect(
     page.getByRole("heading", { name: "Draft undangan" }),
   ).toBeVisible();
-  await expect(page.getByText("11 milestone tervalidasi")).toBeVisible();
+  await expect(page.getByText("12 milestone tervalidasi")).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Kelengkapan konten" }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Variasi template" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Tamu dan ucapan" }),
   ).toBeVisible();
   await expect(
     page.getByText(

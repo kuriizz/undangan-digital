@@ -8,6 +8,8 @@ const validRsvp = {
   attendance: "attending",
   partySize: "2",
   note: "Sampai jumpa",
+  wish: "Semoga berbahagia selalu",
+  guestToken: "",
   idempotencyKey: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
 };
 
@@ -42,6 +44,10 @@ describe("public RSVP validation", () => {
     ).toBe(false);
     expect(
       publicRsvpSchema.safeParse({ ...validRsvp, note: "a".repeat(501) })
+        .success,
+    ).toBe(false);
+    expect(
+      publicRsvpSchema.safeParse({ ...validRsvp, wish: "a".repeat(501) })
         .success,
     ).toBe(false);
   });

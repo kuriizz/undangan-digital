@@ -77,7 +77,8 @@ Mailpit dengan `npx supabase status`. Setelah masuk, buat draft melalui
 acara, konten, media, urutan section, serta pilihan template. Preview Modern
 Minimal, Elegant Floral, atau Nusantara Contemporary milik pemilik tersedia pada
 `/dashboard/invitations/[id]/preview`. Ringkasan perkembangan produk tersedia di
-`/changelog`.
+`/changelog`. Daftar tamu, tautan personal, batas rombongan, serta moderasi
+ucapan dikelola melalui `/dashboard/invitations/[id]/guests`.
 
 ## Quality commands
 

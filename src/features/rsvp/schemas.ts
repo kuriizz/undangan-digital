@@ -7,6 +7,8 @@ export const publicRsvpSchema = z
     attendance: z.enum(["attending", "not_attending"]),
     partySize: z.coerce.number().int().min(0).max(10),
     note: z.string().trim().max(500, "Catatan maksimal 500 karakter."),
+    wish: z.string().trim().max(500, "Ucapan maksimal 500 karakter."),
+    guestToken: z.string().max(200),
     idempotencyKey: z.string().uuid(),
   })
   .superRefine((input, context) => {
@@ -33,5 +35,7 @@ export type PublicRsvpValues = {
   attendance: string;
   partySize: string;
   note: string;
+  wish: string;
+  guestToken: string;
   idempotencyKey: string;
 };
