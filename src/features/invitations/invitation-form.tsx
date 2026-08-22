@@ -8,15 +8,22 @@ import {
   type InvitationDraftFormState,
 } from "./actions";
 import {
-  invitationAccentKeys,
   invitationSectionKeys,
-  invitationTypographyKeys,
+  invitationTemplateKeys,
+  type InvitationAccentKey,
+  type InvitationTemplateKey,
+  type InvitationTypographyKey,
 } from "./content";
 import {
   invitationTimezones,
   type InvitationDraftValues,
   type InvitationEventEditor,
 } from "./schemas";
+import {
+  invitationTemplateCatalog,
+  invitationTemplates,
+  normalizeTemplateSelection,
+} from "../templates/catalog";
 
 type InvitationFormProps = {
   initialValues: InvitationDraftValues;
@@ -74,6 +81,12 @@ function parseInitialSections(value: string) {
   }
 }
 
+function parseInitialTemplate(value: string): InvitationTemplateKey {
+  return invitationTemplateKeys.includes(value as InvitationTemplateKey)
+    ? (value as InvitationTemplateKey)
+    : "modern-minimal";
+}
+
 export function InvitationForm({ initialValues, mode }: InvitationFormProps) {
   const action =
     mode === "create" ? createInvitationDraft : saveInvitationDraft;
@@ -88,6 +101,16 @@ export function InvitationForm({ initialValues, mode }: InvitationFormProps) {
   const [sections, setSections] = useState(() =>
     parseInitialSections(initialValues.sectionsJson),
   );
+  const initialTemplate = parseInitialTemplate(initialValues.templateKey);
+  const initialDesign = normalizeTemplateSelection(
+    initialTemplate,
+    initialValues.accent,
+    initialValues.typography,
+  );
+  const [templateKey, setTemplateKey] = useState(initialDesign.templateKey);
+  const [accent, setAccent] = useState(initialDesign.accent);
+  const [typography, setTypography] = useState(initialDesign.typography);
+  const activeTemplate = invitationTemplateCatalog[templateKey];
 
   function updateEvent(
     index: number,
@@ -121,6 +144,17 @@ export function InvitationForm({ initialValues, mode }: InvitationFormProps) {
       [next[index], next[target]] = [next[target], next[index]];
       return next;
     });
+  }
+
+  function changeTemplate(nextTemplate: InvitationTemplateKey) {
+    const selection = normalizeTemplateSelection(
+      nextTemplate,
+      accent,
+      typography,
+    );
+    setTemplateKey(selection.templateKey);
+    setAccent(selection.accent);
+    setTypography(selection.typography);
   }
 
   return (
@@ -201,23 +235,43 @@ export function InvitationForm({ initialValues, mode }: InvitationFormProps) {
 
       <fieldset className="space-y-4">
         <legend className="text-lg font-semibold text-stone-950">
-          Tampilan Modern Minimal
+          Tampilan undangan
         </legend>
+        <label className="block space-y-2 text-sm font-medium text-stone-800">
+          <span>Template</span>
+          <select
+            name="templateKey"
+            value={templateKey}
+            onChange={(event) =>
+              changeTemplate(event.currentTarget.value as InvitationTemplateKey)
+            }
+            className={inputClassName}
+          >
+            {invitationTemplates.map((template) => (
+              <option key={template.key} value={template.key}>
+                {template.label}
+              </option>
+            ))}
+          </select>
+          <span className="block font-normal text-stone-500">
+            {activeTemplate.description}
+          </span>
+          <FieldError messages={state.fieldErrors?.templateKey} />
+        </label>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block space-y-2 text-sm font-medium text-stone-800">
             <span>Warna aksen</span>
             <select
               name="accent"
-              defaultValue={values.accent}
+              value={accent}
+              onChange={(event) =>
+                setAccent(event.currentTarget.value as InvitationAccentKey)
+              }
               className={inputClassName}
             >
-              {invitationAccentKeys.map((accent) => (
-                <option key={accent} value={accent}>
-                  {accent === "rose"
-                    ? "Mawar"
-                    : accent === "sage"
-                      ? "Sage"
-                      : "Emas"}
+              {activeTemplate.accents.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
                 </option>
               ))}
             </select>
@@ -227,12 +281,17 @@ export function InvitationForm({ initialValues, mode }: InvitationFormProps) {
             <span>Gaya tipografi</span>
             <select
               name="typography"
-              defaultValue={values.typography}
+              value={typography}
+              onChange={(event) =>
+                setTypography(
+                  event.currentTarget.value as InvitationTypographyKey,
+                )
+              }
               className={inputClassName}
             >
-              {invitationTypographyKeys.map((typography) => (
-                <option key={typography} value={typography}>
-                  {typography === "modern" ? "Modern" : "Elegan"}
+              {activeTemplate.typography.map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
                 </option>
               ))}
             </select>

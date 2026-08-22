@@ -1,7 +1,40 @@
 import { z } from "zod";
 
-export const invitationAccentKeys = ["rose", "sage", "gold"] as const;
-export const invitationTypographyKeys = ["modern", "elegant"] as const;
+export const invitationTemplateKeys = [
+  "modern-minimal",
+  "elegant-floral",
+  "nusantara-contemporary",
+] as const;
+export const modernMinimalAccentKeys = ["rose", "sage", "gold"] as const;
+export const elegantFloralAccentKeys = [
+  "ivory-rose",
+  "blush-burgundy",
+  "champagne-plum",
+] as const;
+export const nusantaraContemporaryAccentKeys = [
+  "indigo-gold",
+  "terracotta-sand",
+  "forest-brass",
+] as const;
+export const invitationAccentKeys = [
+  ...modernMinimalAccentKeys,
+  ...elegantFloralAccentKeys,
+  ...nusantaraContemporaryAccentKeys,
+] as const;
+export const modernMinimalTypographyKeys = ["modern", "elegant"] as const;
+export const elegantFloralTypographyKeys = [
+  "romantic-serif",
+  "classic-serif",
+] as const;
+export const nusantaraContemporaryTypographyKeys = [
+  "contemporary-serif",
+  "geometric-sans",
+] as const;
+export const invitationTypographyKeys = [
+  ...modernMinimalTypographyKeys,
+  ...elegantFloralTypographyKeys,
+  ...nusantaraContemporaryTypographyKeys,
+] as const;
 export const invitationSectionKeys = [
   "hero",
   "events",
@@ -13,18 +46,36 @@ export const invitationSectionKeys = [
 ] as const;
 
 const sectionSchema = z.enum(invitationSectionKeys);
+const sectionsSchema = z
+  .array(sectionSchema)
+  .min(1)
+  .max(invitationSectionKeys.length)
+  .refine((sections) => new Set(sections).size === sections.length)
+  .refine((sections) => sections.includes("hero"));
 
-export const invitationPresentationSchema = z.object({
-  templateKey: z.literal("modern-minimal"),
-  accent: z.enum(invitationAccentKeys),
-  typography: z.enum(invitationTypographyKeys),
-  sections: z
-    .array(sectionSchema)
-    .min(1)
-    .max(invitationSectionKeys.length)
-    .refine((sections) => new Set(sections).size === sections.length)
-    .refine((sections) => sections.includes("hero")),
-});
+export const invitationPresentationSchema = z.discriminatedUnion(
+  "templateKey",
+  [
+    z.object({
+      templateKey: z.literal("modern-minimal"),
+      accent: z.enum(modernMinimalAccentKeys),
+      typography: z.enum(modernMinimalTypographyKeys),
+      sections: sectionsSchema,
+    }),
+    z.object({
+      templateKey: z.literal("elegant-floral"),
+      accent: z.enum(elegantFloralAccentKeys),
+      typography: z.enum(elegantFloralTypographyKeys),
+      sections: sectionsSchema,
+    }),
+    z.object({
+      templateKey: z.literal("nusantara-contemporary"),
+      accent: z.enum(nusantaraContemporaryAccentKeys),
+      typography: z.enum(nusantaraContemporaryTypographyKeys),
+      sections: sectionsSchema,
+    }),
+  ],
+);
 
 export const DEFAULT_INVITATION_PRESENTATION = {
   templateKey: "modern-minimal",
@@ -89,6 +140,9 @@ const legacyInvitationDocumentV1Schema = z.object({
 });
 
 export type InvitationDocument = z.infer<typeof invitationDocumentV2Schema>;
+export type InvitationTemplateKey = (typeof invitationTemplateKeys)[number];
+export type InvitationAccentKey = (typeof invitationAccentKeys)[number];
+export type InvitationTypographyKey = (typeof invitationTypographyKeys)[number];
 
 export const invitationDocumentSchema = z
   .union([invitationDocumentV2Schema, legacyInvitationDocumentV1Schema])

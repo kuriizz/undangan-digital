@@ -41,6 +41,7 @@ const validDraft = {
     },
   ]),
   sectionsJson: JSON.stringify(["hero", "story", "events", "closing"]),
+  templateKey: "modern-minimal",
   accent: "rose",
   typography: "elegant",
 };
@@ -96,6 +97,39 @@ describe("invitation draft input", () => {
       invitationDraftSchema.safeParse({
         ...validDraft,
         sectionsJson: JSON.stringify(["story", "events"]),
+      }).success,
+    ).toBe(false);
+  });
+
+  it("preserves content when a template selection changes", () => {
+    const input = invitationDraftSchema.parse({
+      ...validDraft,
+      templateKey: "nusantara-contemporary",
+      accent: "indigo-gold",
+      typography: "contemporary-serif",
+    });
+    const content = toDraftContent(input);
+
+    expect(content.couple).toEqual({
+      partnerOneName: "Ayu",
+      partnerTwoName: "Bima",
+    });
+    expect(content.content.story).toBe("Cerita kami");
+    expect(content.presentation).toMatchObject({
+      templateKey: "nusantara-contemporary",
+      accent: "indigo-gold",
+      typography: "contemporary-serif",
+      sections: ["hero", "story", "events", "closing"],
+    });
+  });
+
+  it("rejects an accent or typography from another template", () => {
+    expect(
+      invitationDraftSchema.safeParse({
+        ...validDraft,
+        templateKey: "elegant-floral",
+        accent: "rose",
+        typography: "romantic-serif",
       }).success,
     ).toBe(false);
   });

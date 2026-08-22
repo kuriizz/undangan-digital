@@ -73,8 +73,9 @@ Buka `http://localhost:3000`.
 Alur autentikasi lokal tersedia di `/register`, `/login`, dan
 `/forgot-password`. Email konfirmasi dan reset lokal ditangkap Mailpit; lihat URL
 Mailpit dengan `npx supabase status`. Setelah masuk, buat draft melalui
-`/dashboard/invitations/new`; editor menyimpan slug, nama pasangan, serta satu
-rangkaian acara. Preview Modern Minimal milik pemilik tersedia dari editor pada
+`/dashboard/invitations/new`; editor menyimpan slug, nama pasangan, rangkaian
+acara, konten, media, urutan section, serta pilihan template. Preview Modern
+Minimal, Elegant Floral, atau Nusantara Contemporary milik pemilik tersedia pada
 `/dashboard/invitations/[id]/preview`. Ringkasan perkembangan produk tersedia di
 `/changelog`.
 

@@ -138,10 +138,10 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P2.2 Template set
 
-- [ ] Tambah dua template sehingga total minimal tiga.
-- [ ] Pastikan konten tetap kompatibel saat template diganti.
-- [ ] Tambah pilihan aksen/font yang terkontrol.
-- [ ] Uji accessibility, reduced motion, dan responsive layout setiap template.
+- [x] Tambah dua template sehingga total minimal tiga.
+- [x] Pastikan konten tetap kompatibel saat template diganti.
+- [x] Tambah pilihan aksen/font yang terkontrol.
+- [x] Uji accessibility, reduced motion, dan responsive layout setiap template.
 
 ### P2.3 Guests and wishes
 

@@ -102,6 +102,16 @@ const completedMilestones = [
       "Menegakkan validasi JPEG/PNG/WebP 5 MB, ownership path, RLS, serta penghapusan file dan metadata.",
     ],
   },
+  {
+    key: "P2.2",
+    title: "Variasi template",
+    changes: [
+      "Menambahkan Elegant Floral dan Nusantara Contemporary sehingga tersedia tiga template yang berbeda secara visual.",
+      "Menambahkan katalog preset warna dan tipografi yang tervalidasi untuk setiap template.",
+      "Mempertahankan konten, media, urutan, visibility section, serta published snapshot ketika template draft diganti.",
+      "Memvalidasi aksesibilitas dasar, reduced motion, dan layout responsif mulai lebar 320 px.",
+    ],
+  },
 ] as const;
 
 const roadmapPhases = [
@@ -115,7 +125,7 @@ const roadmapPhases = [
     phase: "Phase 2",
     status: "Sedang berjalan",
     summary:
-      "P2.1 kelengkapan konten dan media selesai; berikutnya menambah dua template beta, pengelolaan tamu, ucapan, dan hardening.",
+      "P2.1 kelengkapan konten dan P2.2 tiga template beta selesai; berikutnya pengelolaan tamu, ucapan, dan hardening.",
   },
   {
     phase: "Phase 3",
@@ -174,7 +184,7 @@ export default function ChangelogPage() {
               </h2>
             </div>
             <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-900">
-              10 milestone tervalidasi
+              11 milestone tervalidasi
             </span>
           </div>
 

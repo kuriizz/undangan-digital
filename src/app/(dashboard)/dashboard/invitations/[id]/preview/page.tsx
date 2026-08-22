@@ -10,7 +10,7 @@ import {
 } from "@/features/invitations/actions";
 import { createInvitationMetadata } from "@/features/invitations/metadata";
 import { getOwnedInvitationPreview } from "@/features/invitations/queries";
-import { ModernMinimalTemplate } from "@/features/templates/modern-minimal/modern-minimal-template";
+import { InvitationTemplate } from "@/features/templates/invitation-template";
 
 export async function generateMetadata({
   params,
@@ -91,7 +91,7 @@ export default async function InvitationPreviewPage({
         </div>
       </aside>
       <div className="mx-auto max-w-5xl bg-white shadow-xl">
-        <ModernMinimalTemplate
+        <InvitationTemplate
           document={invitation.document}
           mediaUrl={(media) =>
             `/api/invitations/${invitation.id}/media/${media.id}`

@@ -41,6 +41,7 @@ function formValues(formData: FormData): InvitationDraftValues {
     contactPhone: value("contactPhone"),
     eventsJson: value("eventsJson"),
     sectionsJson: value("sectionsJson"),
+    templateKey: value("templateKey"),
     accent: value("accent"),
     typography: value("typography"),
   };

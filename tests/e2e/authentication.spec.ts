@@ -65,6 +65,7 @@ test("password reset request does not disclose account existence", async ({
 });
 
 test("owner creates and updates one invitation draft", async ({ page }) => {
+  test.setTimeout(90_000);
   const testRun = Date.now();
   const email = `invitation-${testRun}@example.test`;
   const slug = `dewi-rizky-${testRun}`;
@@ -160,10 +161,16 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   const publicMediaPath = `/media/${coverMediaId}`;
   expect((await page.request.get(publicMediaPath)).status()).toBe(404);
 
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 320, height: 800 });
-  await page.getByRole("link", { name: "Lihat preview" }).click();
-  const previewUrl = page.url();
+  const previewLink = page.getByRole("link", { name: "Lihat preview" });
+  const previewUrl = await previewLink.getAttribute("href");
+  expect(previewUrl).toMatch(/\/dashboard\/invitations\/.+\/preview/);
+  await previewLink.click();
   await expect(page.getByText("Mode preview")).toBeVisible();
+  await expect(
+    page.locator('article[data-template="modern-minimal"]'),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
   await expect(page.getByText("Gedung Bahagia Baru").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Resepsi" })).toBeVisible();
@@ -186,11 +193,63 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
     .getAttribute("href");
   expect(publicPath).toBe(`/i/${slug}`);
 
+  await page.getByRole("link", { name: "Edit draft" }).click();
+  await expect(page.getByLabel("Cerita pasangan (opsional)")).toHaveValue(
+    "Kami bertemu dan tumbuh bersama di Jakarta.",
+  );
+  await page.getByLabel("Template").selectOption("elegant-floral");
+  await expect(page.getByLabel("Warna aksen")).toHaveValue("ivory-rose");
+  await expect(page.getByLabel("Gaya tipografi")).toHaveValue("romantic-serif");
+  await page.getByRole("button", { name: "Simpan perubahan" }).click();
+  await page.getByRole("link", { name: "Lihat preview" }).click();
+  await expect(
+    page.locator('article[data-template="elegant-floral"]'),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Kami bertemu dan tumbuh bersama di Jakarta."),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+
+  await page.goto(publicPath!);
+  await expect(
+    page.locator('article[data-template="modern-minimal"]'),
+  ).toBeVisible();
+
+  await page.goto(previewUrl!);
+  await page.getByRole("link", { name: "Kembali mengedit" }).click();
+  await page.getByLabel("Template").selectOption("nusantara-contemporary");
+  await expect(page.getByLabel("Warna aksen")).toHaveValue("indigo-gold");
+  await expect(page.getByLabel("Gaya tipografi")).toHaveValue(
+    "contemporary-serif",
+  );
+  await page.getByRole("button", { name: "Simpan perubahan" }).click();
+  await page.getByRole("link", { name: "Lihat preview" }).click();
+  await expect(
+    page.locator('article[data-template="nusantara-contemporary"]'),
+  ).toBeVisible();
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+  }
+  await page.getByRole("button", { name: "Terbitkan ulang" }).click();
+  await expect(page.getByText("Undangan berhasil diterbitkan.")).toBeVisible();
+
   await page.getByRole("button", { name: "Keluar" }).click();
-  await page.goto(previewUrl);
+  await page.goto(previewUrl!);
   await expect(page).toHaveURL(/\/login\?error=/);
 
   await page.goto(publicPath!);
+  await expect(
+    page.locator('article[data-template="nusantara-contemporary"]'),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Dewi" })).toBeVisible();
   await expect(page.getByText("Gedung Bahagia Baru").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Resepsi" })).toBeVisible();

@@ -88,6 +88,7 @@ export default async function InvitationContentPage({
     contactPhone: content.data.content.contactPhone,
     eventsJson: JSON.stringify(initialEvents),
     sectionsJson: JSON.stringify(content.data.presentation.sections),
+    templateKey: content.data.presentation.templateKey,
     accent: content.data.presentation.accent,
     typography: content.data.presentation.typography,
   };

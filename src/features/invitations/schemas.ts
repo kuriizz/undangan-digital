@@ -3,8 +3,14 @@ import { z } from "zod";
 import {
   invitationAccentKeys,
   invitationSectionKeys,
+  invitationTemplateKeys,
   invitationTypographyKeys,
+  storedInvitationDraftV2Schema,
 } from "./content";
+import {
+  isTemplateSelectionValid,
+  normalizeTemplateSelection,
+} from "../templates/catalog";
 
 export const RESERVED_SLUGS = [
   "admin",
@@ -120,29 +126,46 @@ const sectionsSchema = z
   .refine((sections) => new Set(sections).size === sections.length)
   .refine((sections) => sections.includes("hero"), "Sampul wajib ditampilkan.");
 
-export const invitationDraftSchema = z.object({
-  invitationId: z.preprocess(
-    (value) => (value === "" ? undefined : value),
-    z.string().uuid().optional(),
-  ),
-  slug: invitationSlugSchema,
-  partnerOneName: trimmedText("Nama pasangan pertama", 100),
-  partnerTwoName: trimmedText("Nama pasangan kedua", 100),
-  story: optionalText("Cerita", 2000),
-  giftBankName: optionalText("Nama bank", 100),
-  giftAccountNumber: optionalText("Nomor rekening", 100),
-  giftAccountHolder: optionalText("Nama pemilik rekening", 100),
-  closingMessage: optionalText("Pesan penutup", 1000),
-  contactName: optionalText("Nama kontak", 100),
-  contactPhone: optionalText("Nomor kontak", 30).refine(
-    (value) => value === "" || /^[+0-9][0-9\s-]*$/.test(value),
-    "Nomor kontak tidak valid.",
-  ),
-  eventsJson: jsonField(eventsSchema, "Data rangkaian acara tidak valid."),
-  sectionsJson: jsonField(sectionsSchema, "Urutan section tidak valid."),
-  accent: z.enum(invitationAccentKeys),
-  typography: z.enum(invitationTypographyKeys),
-});
+export const invitationDraftSchema = z
+  .object({
+    invitationId: z.preprocess(
+      (value) => (value === "" ? undefined : value),
+      z.string().uuid().optional(),
+    ),
+    slug: invitationSlugSchema,
+    partnerOneName: trimmedText("Nama pasangan pertama", 100),
+    partnerTwoName: trimmedText("Nama pasangan kedua", 100),
+    story: optionalText("Cerita", 2000),
+    giftBankName: optionalText("Nama bank", 100),
+    giftAccountNumber: optionalText("Nomor rekening", 100),
+    giftAccountHolder: optionalText("Nama pemilik rekening", 100),
+    closingMessage: optionalText("Pesan penutup", 1000),
+    contactName: optionalText("Nama kontak", 100),
+    contactPhone: optionalText("Nomor kontak", 30).refine(
+      (value) => value === "" || /^[+0-9][0-9\s-]*$/.test(value),
+      "Nomor kontak tidak valid.",
+    ),
+    eventsJson: jsonField(eventsSchema, "Data rangkaian acara tidak valid."),
+    sectionsJson: jsonField(sectionsSchema, "Urutan section tidak valid."),
+    templateKey: z.enum(invitationTemplateKeys),
+    accent: z.enum(invitationAccentKeys),
+    typography: z.enum(invitationTypographyKeys),
+  })
+  .superRefine((input, context) => {
+    if (
+      !isTemplateSelectionValid(
+        input.templateKey,
+        input.accent,
+        input.typography,
+      )
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["templateKey"],
+        message: "Kombinasi template, warna, dan tipografi tidak valid.",
+      });
+    }
+  });
 
 export type InvitationEventEditor = z.infer<typeof invitationEventEditorSchema>;
 export type InvitationDraftInput = z.infer<typeof invitationDraftSchema>;
@@ -161,6 +184,7 @@ export type InvitationDraftValues = {
   contactPhone: string;
   eventsJson: string;
   sectionsJson: string;
+  templateKey: string;
   accent: string;
   typography: string;
 };
@@ -188,7 +212,13 @@ export function toRelationalEvents(input: InvitationDraftInput) {
 }
 
 export function toDraftContent(input: InvitationDraftInput) {
-  return {
+  const presentation = normalizeTemplateSelection(
+    input.templateKey,
+    input.accent,
+    input.typography,
+  );
+
+  return storedInvitationDraftV2Schema.parse({
     schemaVersion: 2,
     couple: {
       partnerOneName: input.partnerOneName,
@@ -204,10 +234,8 @@ export function toDraftContent(input: InvitationDraftInput) {
       contactPhone: input.contactPhone,
     },
     presentation: {
-      templateKey: "modern-minimal" as const,
-      accent: input.accent,
-      typography: input.typography,
+      ...presentation,
       sections: input.sectionsJson,
     },
-  };
+  });
 }

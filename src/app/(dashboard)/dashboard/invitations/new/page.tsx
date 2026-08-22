@@ -37,6 +37,7 @@ const initialValues: InvitationDraftValues = {
     "gifts",
     "closing",
   ]),
+  templateKey: "modern-minimal",
   accent: "rose",
   typography: "elegant",
 };

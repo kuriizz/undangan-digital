@@ -3,12 +3,12 @@ import type { ReactNode } from "react";
 
 import type { InvitationDocument } from "@/features/invitations/content";
 import { getInvitationMediaPublicUrl } from "@/features/media/public-url";
-
-type ModernMinimalTemplateProps = {
-  afterSections?: ReactNode;
-  document: InvitationDocument;
-  mediaUrl?: (media: InvitationDocument["media"][number]) => string;
-};
+import {
+  eventSchedule,
+  templateContent,
+  timezoneLabels,
+  type InvitationTemplateProps,
+} from "@/features/templates/template-contract";
 
 const accentStyles = {
   rose: {
@@ -35,52 +35,24 @@ const accentStyles = {
   },
 } as const;
 
-const timezoneLabels = {
-  "Asia/Jakarta": "WIB",
-  "Asia/Makassar": "WITA",
-  "Asia/Jayapura": "WIT",
-} as const;
-
-function eventSchedule(event: InvitationDocument["events"][number]) {
-  return {
-    date: new Intl.DateTimeFormat("id-ID", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      timeZone: event.timezone,
-    }).format(new Date(event.startsAt)),
-    time: new Intl.DateTimeFormat("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-      timeZone: event.timezone,
-    }).format(new Date(event.startsAt)),
-  };
-}
-
 export function ModernMinimalTemplate({
   afterSections,
   document,
   mediaUrl = (media) => getInvitationMediaPublicUrl(media.id),
-}: ModernMinimalTemplateProps) {
-  const accent = accentStyles[document.presentation.accent];
+}: InvitationTemplateProps) {
+  const accentKey =
+    document.presentation.templateKey === "modern-minimal"
+      ? document.presentation.accent
+      : "rose";
+  const accent = accentStyles[accentKey];
   const headingFont =
-    document.presentation.typography === "elegant" ? "font-serif" : "font-sans";
+    document.presentation.templateKey === "modern-minimal" &&
+    document.presentation.typography === "elegant"
+      ? "font-serif"
+      : "font-sans";
   const firstSchedule = eventSchedule(document.events[0]);
-  const cover = document.media.find((item) => item.kind === "cover");
-  const gallery = document.media.filter((item) => item.kind === "gallery");
-  const mappableEvents = document.events.filter((event) => event.mapUrl);
-  const hasGift = Boolean(
-    document.content.giftBankName ||
-    document.content.giftAccountNumber ||
-    document.content.giftAccountHolder,
-  );
-  const hasClosing = Boolean(
-    document.content.closingMessage ||
-    document.content.contactName ||
-    document.content.contactPhone,
-  );
+  const { cover, gallery, mappableEvents, hasGift, hasClosing } =
+    templateContent(document);
 
   const sections: Record<
     InvitationDocument["presentation"]["sections"][number],
@@ -308,7 +280,10 @@ export function ModernMinimalTemplate({
   };
 
   return (
-    <article className="min-w-0 overflow-hidden bg-white text-stone-900">
+    <article
+      data-template="modern-minimal"
+      className="min-w-0 overflow-hidden bg-white text-stone-900"
+    >
       {document.presentation.sections.map((section) => sections[section])}
       {afterSections}
       <footer className="border-t border-stone-200 bg-stone-950 px-5 py-8 text-center text-sm text-stone-400">
