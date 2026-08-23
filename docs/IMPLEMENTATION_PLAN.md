@@ -152,11 +152,13 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 ### P2.4 Hardening and beta readiness
 
-- [ ] Rate limit dan anti-spam pada seluruh endpoint publik.
-- [ ] Open Graph image/metadata dan link preview.
-- [ ] Error monitoring, structured logs, dan redaksi data sensitif.
-- [ ] Privacy, terms, report abuse, retention, dan account deletion minimum.
+- [x] Rate limit dan anti-spam pada seluruh endpoint publik.
+- [x] Open Graph image/metadata dan link preview.
+- [x] Error monitoring, structured logs, dan redaksi data sensitif.
+- [x] Privacy, terms, report abuse, retention, dan account deletion minimum.
 - [ ] Uji jaringan lambat, perangkat nyata, serta performance budget.
+  - [x] Simulasi jaringan lambat dan budget navigasi/resource otomatis.
+  - [ ] Lighthouse deployment produksi dan smoke test perangkat nyata P2.4.
 - [ ] Jalankan beta 5–10 pasangan dan prioritaskan temuan.
 - [ ] Validasi minat, kebutuhan kustomisasi, sensitivitas harga, dan willingness-to-pay untuk kandidat paket Easy dan Advanced.
 
@@ -164,7 +166,7 @@ Status milestone: `Not started`, `In progress`, `Blocked`, atau `Complete`.
 
 - [ ] Semua requirement MVP mempunyai bukti acceptance.
 - [ ] Target Lighthouse contoh produksi tercapai atau pengecualian terdokumentasi.
-- [ ] Restore database telah diuji.
+- [x] Restore database telah diuji.
 - [ ] Tidak ada issue kritis/tinggi terbuka.
 - [ ] Feedback beta utama sudah ditangani atau sengaja ditunda dengan alasan.
 

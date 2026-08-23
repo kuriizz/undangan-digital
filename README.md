@@ -5,10 +5,11 @@ digital serta mengelola RSVP tamu.
 
 ## Status
 
-**Phase 2 — MVP beta** sedang berjalan. Phase 1 telah selesai, dan P2.1 content
-completeness sudah tervalidasi dengan dukungan beberapa acara, section konten
-lengkap, urutan/visibility section, serta upload media tenant-safe dengan batas
-1 sampul dan 10 foto galeri.
+**Phase 2 — MVP beta** sedang berjalan. P2.1–P2.3 telah selesai. Engineering
+hardening P2.4 mencakup trusted public request boundary, anti-spam, metadata
+sosial, observability privacy-first, legal minimum, account deletion, dan
+database restore proof. Lighthouse produksi, smoke test perangkat nyata P2.4,
+serta beta 5–10 pasangan masih menjadi exit gate eksternal.
 
 Dokumen utama:
 
@@ -27,6 +28,7 @@ Dokumen utama:
 - Supabase untuk PostgreSQL, Auth, dan Storage
 - Vitest dan Playwright untuk pengujian
 - Vercel untuk hosting aplikasi
+- Sentry Cloud untuk error monitoring opt-in
 
 ## Prasyarat
 
@@ -58,9 +60,15 @@ Pada macOS/Linux:
 cp .env.example .env.local
 ```
 
-Isi `RSVP_FINGERPRINT_SECRET` dengan nilai acak minimal 32 karakter yang berbeda
+Isi `SUPABASE_SERVICE_ROLE_KEY` hanya pada server dari output local Supabase dan
+isi `RSVP_FINGERPRINT_SECRET` dengan nilai acak minimal 32 karakter yang berbeda
 untuk setiap environment. Nilai ini dipakai untuk membuat fingerprint rate
-limit tanpa menyimpan IP atau user-agent mentah.
+limit tanpa menyimpan IP atau user-agent mentah. Service-role key tidak boleh
+memakai prefix `NEXT_PUBLIC_` atau masuk source control.
+
+Sentry bersifat opsional dan tidak aktif tanpa DSN. Deployment beta dapat
+mengisi variable `SENTRY_*` dan `NEXT_PUBLIC_SENTRY_*` pada `.env.example`;
+session replay dan PII bawaan tetap dinonaktifkan.
 
 Jalankan aplikasi:
 
@@ -111,6 +119,7 @@ npm run test:e2e
 | `npm run db:reset`         | Membuat ulang database lokal dari migration dan seed |
 | `npm run db:lint`          | Memeriksa masalah schema PostgreSQL lokal            |
 | `npm run db:test`          | Menjalankan seluruh database test pgTAP              |
+| `npm run db:restore:test`  | Menguji restore ke database verifikasi terisolasi    |
 | `npm run test:integration` | Alias quality gate untuk `npm run db:test`           |
 
 Workflow database harian:
@@ -120,6 +129,7 @@ npm run db:start
 npm run db:reset
 npm run db:lint
 npm run test:integration
+npm run db:restore:test
 ```
 
 Migration adalah satu-satunya sumber perubahan schema. Jangan mengandalkan
@@ -127,7 +137,7 @@ perubahan manual di Supabase Studio tanpa menangkapnya sebagai migration.
 
 CI di `.github/workflows/ci.yml` menjalankan formatting, lint, typecheck, unit
 test, production build, database reset dari kondisi bersih, database lint,
-pgTAP, dan E2E autentikasi/draft pada push ke `main` serta pull request.
+pgTAP, restore proof, dan E2E pada setiap push serta pull request.
 
 ## Environment
 
@@ -143,7 +153,8 @@ atau Supabase service-role key.
 
 Autentikasi, profile onboarding, session cookie, editor draft inti, slug,
 template Modern Minimal, preview pemilik, grants, dan RLS sudah tersedia.
-Publish/unpublish, halaman publik `/i/[slug]`, RSVP umum, dan ringkasan respons
-pemilik juga sudah tersedia. Tautan tamu personal serta ucapan tetap mengikuti
-urutan di `docs/IMPLEMENTATION_PLAN.md`; pembayaran, broadcast WhatsApp, custom
+Publish/unpublish, halaman publik `/i/[slug]`, RSVP, tamu personal, ucapan,
+laporan penyalahgunaan, dan penghapusan akun sudah tersedia. Aktivasi monitoring
+deployment dan langkah beta mengikuti `docs/features/beta-readiness.md`;
+pembayaran, broadcast WhatsApp, custom
 domain, QR check-in, AI, dan editor drag-and-drop berada di luar MVP.

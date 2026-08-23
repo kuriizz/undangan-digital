@@ -255,6 +255,10 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
 
   await page.goto(personalUrl!);
   await expect(page.getByText(/ditujukan untuk Tamu Personal/)).toBeVisible();
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    new RegExp(`${publicPath}$`),
+  );
   await expect(page.getByLabel("Nama", { exact: true })).toHaveValue(
     "Tamu Personal",
   );
@@ -296,6 +300,19 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
   await expect(page.getByText("Bank Uji")).toBeVisible();
   await expect(page.getByAltText("Foto sampul pasangan")).toBeVisible();
   await expect(page).toHaveTitle("Dewi & Rizky | Undangan Pernikahan");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    new RegExp(`${publicPath}/opengraph-image$`),
+  );
+  await page.getByRole("link", { name: "Laporkan undangan ini" }).click();
+  await page
+    .getByLabel("Penjelasan")
+    .fill("Pengujian laporan privasi untuk alur beta.");
+  await page.getByRole("button", { name: "Kirim laporan" }).click();
+  await expect(
+    page.getByText("Laporan diterima dan akan ditinjau oleh pengelola."),
+  ).toBeVisible();
+  await page.goto(publicPath!);
   await page.getByLabel("Nama", { exact: true }).fill("Tamu E2E");
   await page.getByLabel("Kehadiran").selectOption("attending");
   await page.getByLabel("Jumlah hadir").fill("2");
@@ -326,4 +343,12 @@ test("owner creates and updates one invitation draft", async ({ page }) => {
 
   const unpublishedResponse = await page.goto(publicPath!);
   expect(unpublishedResponse?.status()).toBe(404);
+
+  await page.goto("/dashboard/settings");
+  await page.getByLabel(/Ketik HAPUS AKUN/).fill("HAPUS AKUN");
+  await page.getByRole("button", { name: "Hapus akun saya" }).click();
+  await expect(page).toHaveURL(/\/login\?success=/);
+  await expect(
+    page.getByText("Akun dan data Anda telah dihapus."),
+  ).toBeVisible();
 });

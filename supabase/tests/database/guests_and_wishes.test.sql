@@ -21,7 +21,7 @@ select id, owner_id, 'Tamu Personal', 2, encode(extensions.digest('secret-token'
 select is((select count(*) from public.guests), 1::bigint, 'owner creates guest');
 select lives_ok($$select public.publish_invitation((select id from public.invitations where slug='guest-test'),1)$$, 'invitation published');
 
-reset role; set local role anon;
+reset role; set local role service_role;
 select is((select guest_name from public.get_personalized_guest('guest-test','secret-token')), 'Tamu Personal', 'valid token personalizes greeting');
 select is((select count(*) from public.get_personalized_guest('guest-test','wrong')), 0::bigint, 'invalid token reveals nothing');
 select is((select result from public.submit_public_rsvp('guest-test','ignored','attending',2::smallint,'','Selamat!','secret-token','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'::uuid,repeat('d',64))), 'accepted', 'personal RSVP accepted');
@@ -40,7 +40,7 @@ select is((select count(*) from public.get_public_wishes('guest-test')), 0::bigi
 set local role authenticated;
 select set_config('request.jwt.claim.sub','11111111-aaaa-4111-8111-111111111111',true);
 update public.wishes set status='approved';
-reset role; set local role anon;
+reset role; set local role service_role;
 select is((select message from public.get_public_wishes('guest-test')), 'Selamat!', 'approved wish is public');
 
 select * from finish();

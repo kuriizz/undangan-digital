@@ -1,10 +1,8 @@
 "use server";
 
-import { createHmac } from "node:crypto";
-
-import { headers } from "next/headers";
-
-import { createClient } from "@/lib/supabase/server";
+import { createRequestFingerprint } from "@/lib/security/request-fingerprint";
+import { reportOperationalError } from "@/lib/observability/report-error";
+import { createTrustedServerClient } from "@/lib/supabase/trusted-server";
 
 import { publicRsvpSchema, type PublicRsvpValues } from "./schemas";
 
@@ -29,23 +27,9 @@ function valuesFrom(formData: FormData): PublicRsvpValues {
     note: value("note"),
     wish: value("wish"),
     guestToken: value("guestToken"),
+    website: value("website"),
     idempotencyKey: value("idempotencyKey"),
   };
-}
-
-async function requestFingerprint() {
-  const secret = process.env.RSVP_FINGERPRINT_SECRET;
-  if (!secret) return null;
-
-  const requestHeaders = await headers();
-  const forwardedFor = requestHeaders.get("x-forwarded-for")?.split(",")[0];
-  const address = forwardedFor?.trim() || "unknown-address";
-  const userAgent = requestHeaders.get("user-agent") ?? "unknown-agent";
-  const language = requestHeaders.get("accept-language") ?? "unknown-language";
-
-  return createHmac("sha256", secret)
-    .update(`${address}\n${userAgent}\n${language}`)
-    .digest("hex");
 }
 
 export async function submitPublicRsvp(
@@ -64,7 +48,7 @@ export async function submitPublicRsvp(
     };
   }
 
-  const fingerprint = await requestFingerprint();
+  const fingerprint = await createRequestFingerprint();
   if (!fingerprint) {
     return {
       status: "error",
@@ -73,7 +57,7 @@ export async function submitPublicRsvp(
     };
   }
 
-  const supabase = await createClient();
+  const supabase = createTrustedServerClient();
   const { data, error } = await supabase.rpc("submit_public_rsvp", {
     p_slug: result.data.slug,
     p_name: result.data.name,
@@ -88,6 +72,9 @@ export async function submitPublicRsvp(
   const response = Array.isArray(data) ? data[0] : null;
 
   if (error || !response) {
+    reportOperationalError("public-rsvp-submit-failed", error, {
+      hasResponse: Boolean(response),
+    });
     return {
       status: "error",
       message: "RSVP belum dapat dikirim. Silakan coba lagi.",

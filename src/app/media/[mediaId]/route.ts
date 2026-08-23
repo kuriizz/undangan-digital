@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { INVITATION_MEDIA_BUCKET } from "@/features/media/public-url";
-import { createClient } from "@/lib/supabase/server";
+import { createRequestFingerprint } from "@/lib/security/request-fingerprint";
+import { createTrustedServerClient } from "@/lib/supabase/trusted-server";
 
 export async function GET(
   _request: Request,
@@ -13,7 +14,16 @@ export async function GET(
     .safeParse((await context.params).mediaId);
   if (!mediaId.success) return new Response(null, { status: 404 });
 
-  const supabase = await createClient();
+  const supabase = createTrustedServerClient();
+  const fingerprint = await createRequestFingerprint();
+  if (!fingerprint) return new Response(null, { status: 503 });
+  const { data: allowed } = await supabase.rpc("consume_public_rate_limit", {
+    p_surface: "public-media",
+    p_fingerprint_hash: fingerprint,
+    p_window: "10 minutes",
+    p_limit: 100,
+  });
+  if (!allowed) return new Response(null, { status: 429 });
   const { data, error } = await supabase.rpc("get_published_invitation_media", {
     p_media_id: mediaId.data,
   });

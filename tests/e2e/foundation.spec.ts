@@ -40,3 +40,20 @@ test("shows completed milestones and separates the roadmap", async ({
     page.getByRole("heading", { name: "Arah berikutnya" }),
   ).toBeVisible();
 });
+
+test("publishes beta privacy, terms, and abuse reporting entry points", async ({
+  page,
+}) => {
+  await page.goto("/privacy");
+  await expect(
+    page.getByRole("heading", { name: "Kebijakan privasi" }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Ketentuan" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Ketentuan layanan" }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Laporkan penyalahgunaan" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Laporkan penyalahgunaan" }),
+  ).toBeVisible();
+});

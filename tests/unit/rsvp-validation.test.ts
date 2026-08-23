@@ -10,6 +10,7 @@ const validRsvp = {
   note: "Sampai jumpa",
   wish: "Semoga berbahagia selalu",
   guestToken: "",
+  website: "",
   idempotencyKey: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
 };
 
@@ -48,6 +49,13 @@ describe("public RSVP validation", () => {
     ).toBe(false);
     expect(
       publicRsvpSchema.safeParse({ ...validRsvp, wish: "a".repeat(501) })
+        .success,
+    ).toBe(false);
+  });
+
+  it("rejects submissions that fill the honeypot", () => {
+    expect(
+      publicRsvpSchema.safeParse({ ...validRsvp, website: "spam.example" })
         .success,
     ).toBe(false);
   });

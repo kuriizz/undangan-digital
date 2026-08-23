@@ -3,7 +3,10 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 
 import { INVITATION_MEDIA_BUCKET } from "@/features/media/public-url";
+import { reportOperationalError } from "@/lib/observability/report-error";
+import { createRequestFingerprint } from "@/lib/security/request-fingerprint";
 import { createClient } from "@/lib/supabase/server";
+import { createTrustedServerClient } from "@/lib/supabase/trusted-server";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const mediaInputSchema = z.object({
@@ -53,6 +56,40 @@ export async function POST(
   } = await supabase.auth.getUser();
   if (!user) {
     return Response.json({ message: "Sesi telah berakhir." }, { status: 401 });
+  }
+
+  const fingerprint = await createRequestFingerprint();
+  if (!fingerprint) {
+    return Response.json(
+      { message: "Layanan upload belum tersedia." },
+      { status: 503 },
+    );
+  }
+  const trusted = createTrustedServerClient();
+  const { data: uploadAllowed, error: rateLimitError } = await trusted.rpc(
+    "consume_public_rate_limit",
+    {
+      p_surface: "media-upload",
+      p_fingerprint_hash: fingerprint,
+      p_window: "1 hour",
+      p_limit: 20,
+    },
+  );
+  if (rateLimitError) {
+    reportOperationalError("media-upload-rate-limit-failed", rateLimitError);
+    return Response.json(
+      { message: "Layanan upload belum tersedia." },
+      { status: 503 },
+    );
+  }
+  if (!uploadAllowed) {
+    return Response.json(
+      {
+        message:
+          "Terlalu banyak percobaan upload. Coba kembali dalam satu jam.",
+      },
+      { status: 429 },
+    );
   }
 
   const formData = await request.formData();
@@ -119,6 +156,9 @@ export async function POST(
     .from(INVITATION_MEDIA_BUCKET)
     .upload(storagePath, file, { contentType: file.type, upsert: false });
   if (uploadError) {
+    reportOperationalError("media-storage-upload-failed", uploadError, {
+      kind: input.data.kind,
+    });
     return Response.json(
       { message: "File belum dapat diunggah." },
       { status: 400 },
@@ -140,6 +180,9 @@ export async function POST(
     });
   if (metadataError) {
     await supabase.storage.from(INVITATION_MEDIA_BUCKET).remove([storagePath]);
+    reportOperationalError("media-metadata-create-failed", metadataError, {
+      kind: input.data.kind,
+    });
     return Response.json(
       { message: "Batas media sudah tercapai." },
       { status: 409 },

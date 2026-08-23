@@ -23,12 +23,12 @@ select ok(
   'owners can select RSVP rows through RLS'
 );
 select ok(
-  has_function_privilege(
+  not has_function_privilege(
     'anon',
     'public.submit_public_rsvp(text,text,text,smallint,text,uuid,text)',
     'execute'
   ),
-  'anonymous can execute the constrained RSVP function'
+  'anonymous cannot bypass the trusted RSVP server boundary'
 );
 
 insert into auth.users (
@@ -100,7 +100,7 @@ select lives_ok(
 );
 
 reset role;
-set local role anon;
+set local role service_role;
 select is(
   (
     select result
@@ -123,7 +123,7 @@ select is(
   'valid RSVP is stored once'
 );
 
-set local role anon;
+set local role service_role;
 select is(
   (
     select result
@@ -146,7 +146,7 @@ select is(
   'idempotent retry creates no duplicate'
 );
 
-set local role anon;
+set local role service_role;
 select is(
   (
     select result
@@ -175,7 +175,7 @@ select set_config('request.jwt.claim.sub', 'ffffffff-ffff-4fff-8fff-ffffffffffff
 select is((select count(*) from public.rsvps), 0::bigint, 'another owner sees no RSVP rows');
 
 reset role;
-set local role anon;
+set local role service_role;
 select is(
   (
     with submissions(idempotency_key) as (
@@ -220,7 +220,7 @@ select lives_ok(
 );
 
 reset role;
-set local role anon;
+set local role service_role;
 select is(
   (
     select result

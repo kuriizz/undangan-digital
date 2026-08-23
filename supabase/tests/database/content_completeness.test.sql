@@ -220,6 +220,9 @@ select is(
   13::bigint,
   'media insertions and deletion advance the draft revision'
 );
+
+reset role;
+set local role service_role;
 select is(
   (
     select count(*)
@@ -230,6 +233,14 @@ select is(
   0::bigint,
   'draft media is unavailable through the public lookup'
 );
+
+reset role;
+set local role authenticated;
+select set_config(
+  'request.jwt.claim.sub',
+  '11111111-1111-4111-8111-111111111111',
+  true
+);
 select lives_ok(
   $$
     select public.publish_invitation(
@@ -239,6 +250,9 @@ select lives_ok(
   $$,
   'owner publishes the snapshot containing gallery media'
 );
+
+reset role;
+set local role service_role;
 select is(
   (
     select count(*)

@@ -9,6 +9,7 @@ export const publicRsvpSchema = z
     note: z.string().trim().max(500, "Catatan maksimal 500 karakter."),
     wish: z.string().trim().max(500, "Ucapan maksimal 500 karakter."),
     guestToken: z.string().max(200),
+    website: z.literal(""),
     idempotencyKey: z.string().uuid(),
   })
   .superRefine((input, context) => {
@@ -37,5 +38,6 @@ export type PublicRsvpValues = {
   note: string;
   wish: string;
   guestToken: string;
+  website: string;
   idempotencyKey: string;
 };

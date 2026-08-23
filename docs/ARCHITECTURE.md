@@ -49,7 +49,7 @@ secret tetap dilakukan pada milestone yang sesuai dengan environment terpisah.
 | Hosting | Vercel | Accepted | Jalur deployment sederhana untuk Next.js |
 | Validation | Zod bersama client/server | Accepted | Satu schema runtime menjadi sumber kebenaran |
 | Testing | Vitest + Supabase integration + Playwright | Accepted | Melindungi aturan bisnis, RLS, dan alur kritis |
-| Monitoring | Error monitoring + structured logs | Open | Vendor dipilih sebelum beta |
+| Monitoring | Sentry Cloud + structured JSON logs | Accepted | Privacy-first error visibility for the beta; see ADR 0005 |
 
 Pin dependency ke versi yang kompatibel saat instalasi; jangan menulis nomor versi ke dokumen ini bila tidak diperlukan.
 
@@ -134,6 +134,11 @@ revision yang diperiksa saat publish. Operasi publish harus atomik sesuai ADR
 
 Browser UI bukan security boundary. Setiap server operation dan database policy harus menolak akses lintas pengguna meskipun caller memanipulasi ID.
 
+Public reads and mutations cross a trusted Next.js server boundary before
+calling narrow database RPCs. The service-role key is server-only and does not
+authorize browser code. Anonymous database roles cannot call abuse-sensitive
+public RPCs directly.
+
 Integration test minimum menggunakan dua pengguna dan memastikan pengguna A tidak dapat select, update, atau delete resource pengguna B.
 
 ## 7. Public request security
@@ -177,6 +182,8 @@ src/app/
 ├── i/[slug]/
 ├── privacy/
 ├── terms/
+├── report-abuse/
+├── (dashboard)/dashboard/settings/
 └── admin/
 ```
 
@@ -209,6 +216,7 @@ Route groups dan nama internal dapat berubah selama URL publik serta boundary mo
 - Gunakan structured logs dengan request/correlation ID.
 - Jangan log token, session, isi ucapan pribadi, nomor rekening, atau data personal yang tidak diperlukan.
 - Tangkap error frontend dan server dengan environment/release metadata.
+- Sentry defaults to no PII, no session replay, low trace sampling, and request/query redaction. It remains disabled without an explicit DSN.
 - Definisikan backup, restore test, data retention, dan account deletion sebelum peluncuran berbayar.
 - Perubahan produksi harus dapat ditelusuri ke commit dan migration.
 

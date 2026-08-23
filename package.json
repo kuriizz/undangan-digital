@@ -24,9 +24,11 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset --local",
     "db:test": "supabase test db",
-    "db:lint": "supabase db lint --local --level warning"
+    "db:lint": "supabase db lint --local --level warning",
+    "db:restore:test": "node scripts/test-database-restore.mjs"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.70.0",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.3",
     "next": "16.3.0",

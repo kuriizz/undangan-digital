@@ -163,12 +163,20 @@ export default async function DashboardPage({
           </section>
         ) : null}
 
-        <Link
-          href="/onboarding"
-          className="inline-flex text-sm font-semibold text-rose-800 hover:underline"
-        >
-          Ubah nama tampilan
-        </Link>
+        <div className="flex flex-wrap gap-5">
+          <Link
+            href="/onboarding"
+            className="inline-flex text-sm font-semibold text-rose-800 hover:underline"
+          >
+            Ubah nama tampilan
+          </Link>
+          <Link
+            href="/dashboard/settings"
+            className="inline-flex text-sm font-semibold text-rose-800 hover:underline"
+          >
+            Pengaturan akun
+          </Link>
+        </div>
       </section>
     </main>
   );

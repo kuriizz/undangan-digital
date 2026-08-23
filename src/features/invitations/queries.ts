@@ -1,7 +1,8 @@
 import { cache } from "react";
 
 import { requireUser } from "@/features/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createRequestFingerprint } from "@/lib/security/request-fingerprint";
+import { createTrustedServerClient } from "@/lib/supabase/trusted-server";
 
 import { createInvitationDocument, invitationDocumentSchema } from "./content";
 
@@ -63,7 +64,16 @@ export const getOwnedInvitationPreview = cache(async (invitationId: string) => {
 });
 
 export const getPublishedInvitationBySlug = cache(async (slug: string) => {
-  const supabase = await createClient();
+  const supabase = createTrustedServerClient();
+  const fingerprint = await createRequestFingerprint();
+  if (!fingerprint) return null;
+  const { data: allowed } = await supabase.rpc("consume_public_rate_limit", {
+    p_surface: "public-invitation",
+    p_fingerprint_hash: fingerprint,
+    p_window: "10 minutes",
+    p_limit: 100,
+  });
+  if (!allowed) return null;
   const { data, error } = await supabase.rpc("get_published_invitation", {
     p_slug: slug,
   });
@@ -85,7 +95,16 @@ export const getPublishedInvitationBySlug = cache(async (slug: string) => {
 
 export async function getPersonalizedGuest(slug: string, token?: string) {
   if (!token) return null;
-  const supabase = await createClient();
+  const supabase = createTrustedServerClient();
+  const fingerprint = await createRequestFingerprint();
+  if (!fingerprint) return null;
+  const { data: allowed } = await supabase.rpc("consume_public_rate_limit", {
+    p_surface: "guest-lookup",
+    p_fingerprint_hash: fingerprint,
+    p_window: "10 minutes",
+    p_limit: 30,
+  });
+  if (!allowed) return null;
   const { data } = await supabase.rpc("get_personalized_guest", {
     p_slug: slug,
     p_token: token,
@@ -101,7 +120,16 @@ export async function getPersonalizedGuest(slug: string, token?: string) {
 }
 
 export async function getPublicWishes(slug: string) {
-  const supabase = await createClient();
+  const supabase = createTrustedServerClient();
+  const fingerprint = await createRequestFingerprint();
+  if (!fingerprint) return [];
+  const { data: allowed } = await supabase.rpc("consume_public_rate_limit", {
+    p_surface: "public-wishes",
+    p_fingerprint_hash: fingerprint,
+    p_window: "10 minutes",
+    p_limit: 100,
+  });
+  if (!allowed) return [];
   const { data } = await supabase.rpc("get_public_wishes", { p_slug: slug });
   return (data ?? []) as {
     name: string;

@@ -21,12 +21,12 @@ select has_function(
   'constrained public lookup exists'
 );
 select ok(
-  has_function_privilege(
+  not has_function_privilege(
     'anon',
     'public.get_published_invitation(text)',
     'execute'
   ),
-  'anonymous can execute only the published lookup'
+  'anonymous cannot bypass the trusted published lookup boundary'
 );
 select ok(
   not has_function_privilege(
@@ -109,7 +109,7 @@ select lives_ok(
 );
 
 reset role;
-set local role anon;
+set local role service_role;
 select is_empty(
   $$ select * from public.get_published_invitation('publish-test') $$,
   'draft invitation is unavailable through the public lookup'
@@ -153,7 +153,7 @@ select is(
   'snapshot records the expected draft revision'
 );
 
-set local role anon;
+set local role service_role;
 select isnt_empty(
   $$ select * from public.get_published_invitation('publish-test') $$,
   'anonymous can read a published snapshot'
@@ -210,7 +210,7 @@ select is(
   'unpublish changes lifecycle status'
 );
 
-set local role anon;
+set local role service_role;
 select is_empty(
   $$ select * from public.get_published_invitation('publish-test') $$,
   'unpublished invitation is no longer publicly available'

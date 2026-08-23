@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { createInvitationMetadata } from "@/features/invitations/metadata";
@@ -25,7 +26,10 @@ export async function generateMetadata({
     };
   }
 
-  return createInvitationMetadata(invitation.document, { preview: false });
+  return createInvitationMetadata(invitation.document, {
+    preview: false,
+    slug: invitation.slug,
+  });
 }
 
 export default async function PublishedInvitationPage({
@@ -81,6 +85,14 @@ export default async function PublishedInvitationPage({
                 </div>
               </section>
             ) : null}
+            <div className="bg-white px-5 pb-10 text-center text-xs text-stone-500">
+              <Link
+                className="hover:text-rose-800 hover:underline"
+                href={`/report-abuse?slug=${encodeURIComponent(invitation.slug)}`}
+              >
+                Laporkan undangan ini
+              </Link>
+            </div>
           </>
         }
       />

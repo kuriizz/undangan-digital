@@ -69,6 +69,18 @@ export function PublicRsvpForm({
           <input type="hidden" name="slug" value={slug} />
           <input type="hidden" name="guestToken" value={guestToken} />
           <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
+          <label
+            aria-hidden="true"
+            className="absolute -left-[10000px] h-px w-px overflow-hidden"
+          >
+            Situs web
+            <input
+              name="website"
+              type="text"
+              autoComplete="off"
+              tabIndex={-1}
+            />
+          </label>
           <label className="block space-y-2 text-sm font-medium text-stone-800">
             <span>Nama</span>
             <input

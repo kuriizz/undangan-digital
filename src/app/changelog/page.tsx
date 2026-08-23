@@ -135,7 +135,7 @@ const roadmapPhases = [
     phase: "Phase 2",
     status: "Sedang berjalan",
     summary:
-      "P2.1 kelengkapan konten, P2.2 tiga template beta, serta P2.3 tamu dan ucapan selesai; berikutnya hardening dan kesiapan beta.",
+      "P2.1–P2.3 selesai. Hardening engineering P2.4 sedang divalidasi sebelum Lighthouse produksi, uji perangkat nyata, dan beta 5–10 pasangan.",
   },
   {
     phase: "Phase 3",
